@@ -1,3 +1,5 @@
+https://github.com/Ringoame196/mining_pachinko 後継プラグイン
+
 # KotlinSpigotPluginTemplate (クローン元)
 https://github.com/sya-ri/KotlinSpigotPluginTemplate
 
