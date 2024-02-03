@@ -1,15 +1,4 @@
-https://github.com/Ringoame196/mining_pachinko 後継プラグイン
-
-# KotlinSpigotPluginTemplate (クローン元)
-https://github.com/sya-ri/KotlinSpigotPluginTemplate
-
-# SpigotPluginTemplate
-
-## 使い方
-
-- `Use this template` を押して、GitHub 上にプロジェクトを作成する。
-- 作成したプロジェクトをクローンする。
--  Gradle の `setup` タスクを実行して、初期化する。
+# mining_pachinko2
 
 ## plugin.yml
 
