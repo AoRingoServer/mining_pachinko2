@@ -36,6 +36,13 @@ configure<BukkitPluginDescription> {
     main = "com.github.AoRingoServer.Main"
     version = gitVersion()
     apiVersion = "1." + pluginVersion.split(".")[1]
+    commands {
+        register("pachinko") {
+            description = "パチンコ関係のコマンド"
+            usage = "/pachinko [入力1] [入力2]"
+            permission = "op"
+        }
+    }
 }
 
 tasks.withType<ShadowJar> {
