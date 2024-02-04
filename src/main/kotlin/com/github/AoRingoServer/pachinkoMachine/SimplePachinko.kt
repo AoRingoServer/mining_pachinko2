@@ -13,6 +13,7 @@ import kotlin.random.Random
 class SimplePachinko() : PachinkoMachines {
     private val fasetProbability = 60
     private val redstoneProbability = 30
+    private val countUsePachinkoBall = 1
     override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
         val pachinko = Pachinko()
         val expressionBlock = block.location.clone().add(0.0, -1.0, 0.0).block
@@ -21,7 +22,7 @@ class SimplePachinko() : PachinkoMachines {
             Material.REDSTONE_BLOCK to { redstoneDrawing(pachinkoPlayer, pachinko, expressionBlock) },
             Material.EMERALD_BLOCK to { emeraldBrawing(pachinkoPlayer, pachinko, expressionBlock) }
         )
-        ItemManager().reducePachinkoBall(pachinkoPlayer.player, 1)
+        ItemManager().reducePachinkoBall(pachinkoPlayer.player, countUsePachinkoBall)
         judgementProcessing[expressionBlock.type]?.invoke() ?: return
     }
     private fun fastDrawing(block: Block, pachinkoPlayer: PachinkoPlayer) {
