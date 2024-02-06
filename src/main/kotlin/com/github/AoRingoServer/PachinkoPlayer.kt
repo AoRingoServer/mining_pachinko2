@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable
 class PachinkoPlayer(val player: Player, private val plugin: Plugin) {
     fun blinkingDisplay(message: String, sound: Sound, block: Block? = null) {
         val interval = 9L
-        var c = 10
+        var c = 8
         if (block != null) {
             blockBreak(block)
         }
