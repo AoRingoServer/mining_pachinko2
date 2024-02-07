@@ -15,7 +15,7 @@ class SimplePachinko : PachinkoMachines {
     private val redstoneProbability = 30
     private val countUsePachinkoBall = 1
     private val redStoneHitMessage = "${ChatColor.RED}1/2チャンス！"
-    private val emeraldHitMessage = "${ChatColor.GREEN}おめでとう"
+    private val emeraldHitMessage = "${ChatColor.GREEN}HIT"
     override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
         val pachinko = Pachinko()
         val expressionBlock = block.location.clone().add(0.0, -1.0, 0.0).block
