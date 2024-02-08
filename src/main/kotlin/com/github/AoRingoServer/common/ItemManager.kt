@@ -5,8 +5,9 @@ import org.bukkit.entity.Player
 
 class ItemManager {
     private val pachinkoItem = PachinkoItem()
-    fun givePachinkoBall(player: Player) {
+    fun givePachinkoBall(player: Player, amount: Int) {
         val item = pachinkoItem.pachinkoBall()
+        item.amount = amount
         player.inventory.addItem(item)
     }
     fun reducePachinkoBall(player: Player, amount: Int) {

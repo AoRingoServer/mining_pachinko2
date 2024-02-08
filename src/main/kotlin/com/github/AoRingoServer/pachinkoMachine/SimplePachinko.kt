@@ -16,6 +16,7 @@ class SimplePachinko : PachinkoMachines {
     private val countUsePachinkoBall = 1
     private val redStoneHitMessage = "${ChatColor.RED}1/2チャンス！"
     private val emeraldHitMessage = "${ChatColor.GREEN}HIT"
+    private val amount = 60
     override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
         val pachinko = Pachinko()
         val expressionBlock = block.location.clone().add(0.0, -1.0, 0.0).block
@@ -45,12 +46,12 @@ class SimplePachinko : PachinkoMachines {
     private fun redstoneDrawing(pachinkoPlayer: PachinkoPlayer, pachinko: Pachinko, block: Block, expressionBlock: Block) {
         val random = Random.nextInt(0, 2) == 0
         if (random) {
-            pachinko.hit(pachinkoPlayer, block)
+            pachinko.hit(pachinkoPlayer, block, amount)
         }
         expressionBlock.type = Material.BEDROCK
     }
     private fun emeraldBrawing(pachinkoPlayer: PachinkoPlayer, pachinko: Pachinko, block: Block, expressionBlock: Block) {
-        pachinko.hit(pachinkoPlayer, block)
+        pachinko.hit(pachinkoPlayer, block, amount)
         expressionBlock.type = Material.BEDROCK
         pachinkoPlayer.player.spawnParticle(Particle.EXPLOSION_LARGE, expressionBlock.location, 100, 0.5, 0.5, 0.5, 0.1)
     }
