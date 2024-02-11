@@ -8,6 +8,9 @@ class Main : JavaPlugin() {
         super.onEnable()
         server.pluginManager.registerEvents(Events(this), this)
         getCommand("pachinko")!!.setExecutor(PachinkoCommand())
+        this.dataFolder.mkdirs()
+        saveResource("config.yml", true)
+        PluginData.DataManager.config = Yml(this).getYml("", "config")
     }
 
     override fun onDisable() {

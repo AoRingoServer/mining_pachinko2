@@ -1,5 +1,6 @@
 package com.github.AoRingoServer
 
+import com.github.AoRingoServer.pachinkoMachine.FalseSimplePachinko
 import com.github.AoRingoServer.pachinkoMachine.PachinkoMachines
 import com.github.AoRingoServer.pachinkoMachine.SimplePachinko
 import org.bukkit.ChatColor
@@ -22,7 +23,8 @@ class Events(val plugin: Plugin) : Listener {
         val pickelName = "${ChatColor.GOLD}採掘パチンコ"
         val judgementBlock = block.location.clone().add(0.0, -2.0, 0.0).block
         val patinkoMachine = mapOf<String, PachinkoMachines>(
-            "simple" to SimplePachinko()
+            "simple" to SimplePachinko(),
+            "falseSimple" to FalseSimplePachinko()
         )
         if (pickel.type != Material.IRON_PICKAXE || pickel.itemMeta?.displayName != pickelName) {
             return
