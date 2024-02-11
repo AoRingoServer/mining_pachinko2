@@ -13,4 +13,7 @@ class Yml(val plugin: Plugin) {
         val filePath = File(playerDataFolder, "$fileName.yml")
         return YamlConfiguration.loadConfiguration(filePath)
     }
+    fun loadConfig(): YamlConfiguration {
+        return getYml("", "config")
+    }
 }
