@@ -40,7 +40,7 @@ class Events(private val plugin: Plugin) : Listener {
         if (!pachinko.consumptionPachinkoBall(player, usePachinkoBallCount?:return)) {
             return
         }
-        pachinkoMachine[pachinkoType]?.shoot(block, pachinkoPlayer) ?: return
+        pachinkoMachine[pachinkoType]?.shoot(block, stagingBlock , pachinkoPlayer) ?: return
     }
     @EventHandler
     fun onPlayerToggleSneak(e: PlayerToggleSneakEvent) {

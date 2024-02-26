@@ -9,15 +9,14 @@ import org.bukkit.block.Block
 import kotlin.random.Random
 
 class MonitoredPachinko : PachinkoMachines {
-    override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
+    override fun shoot(block: Block,stagingBlock:Block, pachinkoPlayer: PachinkoPlayer) {
         val probabilityBlock = Material.SEA_LANTERN
         val buttonPushMessage = "${ChatColor.YELLOW}ボタンを押せ！！！"
         val config = PluginData.DataManager.config
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
-        val displayBlock = block.location.clone().add(0.0, -1.0, 0.0).block
-        when (displayBlock.type) {
-            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, displayBlock, probabilityBlock, buttonPushMessage)
-            probabilityBlock -> resetWool(displayBlock)
+        when (stagingBlock.type) {
+            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, stagingBlock, probabilityBlock, buttonPushMessage)
+            probabilityBlock -> resetWool(stagingBlock)
         }
     }
 

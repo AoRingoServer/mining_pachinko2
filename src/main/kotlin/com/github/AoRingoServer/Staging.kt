@@ -1,4 +1,3 @@
 package com.github.AoRingoServer
 
-class Staging {
-}
+class Staging

@@ -9,11 +9,11 @@ class FalseSimplePachinko : PachinkoMachines {
     override fun acquisitionUseBallCount(): Int {
         return 1
     }
-    override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
+    override fun shoot(block: Block,stagingBlock:Block, pachinkoPlayer: PachinkoPlayer) {
         val config = PluginData.DataManager.config
         val emeraldProbability = config?.get("falseSimple.emeraldProbability").toString().toInt()
         val simpleEmeraldProbability = config?.get("simple.probability").toString().toInt()
         val redStoneProbability = simpleEmeraldProbability / 2
-        simplePachinko.initialDrawing(block, pachinkoPlayer, emeraldProbability, redStoneProbability)
+        simplePachinko.initialDrawing(block,stagingBlock, pachinkoPlayer, emeraldProbability, redStoneProbability)
     }
 }

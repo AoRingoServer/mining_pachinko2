@@ -5,5 +5,5 @@ import org.bukkit.block.Block
 
 interface PachinkoMachines {
     fun acquisitionUseBallCount(): Int
-    fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer)
+    fun shoot(block: Block, stagingBlock:Block , pachinkoPlayer: PachinkoPlayer)
 }

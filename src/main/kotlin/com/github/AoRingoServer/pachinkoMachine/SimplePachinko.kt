@@ -11,28 +11,26 @@ import org.bukkit.block.Block
 import kotlin.random.Random
 
 class SimplePachinko : PachinkoMachines {
-    private val countUsePachinkoBall = 1
     private val redStoneHitMessage = "${ChatColor.RED}1/2チャンス！"
     private val emeraldHitMessage = "${ChatColor.GREEN}HIT!!"
     private val amount = 50
     override fun acquisitionUseBallCount(): Int {
         return 1
     }
-    override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
+    override fun shoot(block: Block, stagingBlock:Block, pachinkoPlayer: PachinkoPlayer) {
         val config = PluginData.DataManager.config
         val emeraldProbability = config?.get("simple.probability").toString().toInt()
         val redStoneProbability = emeraldProbability / 2
-        initialDrawing(block, pachinkoPlayer, emeraldProbability, redStoneProbability)
+        initialDrawing(block,stagingBlock, pachinkoPlayer, emeraldProbability, redStoneProbability)
     }
-    fun initialDrawing(block: Block, pachinkoPlayer: PachinkoPlayer, emeraldProbability: Int, redStoneProbability: Int) {
+    fun initialDrawing(block: Block,stagingBlock:Block, pachinkoPlayer: PachinkoPlayer, emeraldProbability: Int, redStoneProbability: Int) {
         val pachinko = Pachinko()
-        val expressionBlock = block.location.clone().add(0.0, -1.0, 0.0).block
         val judgementProcessing = mapOf(
             Material.BEDROCK to { fastDrawing(block, pachinkoPlayer, emeraldProbability, redStoneProbability) },
-            Material.REDSTONE_BLOCK to { redstoneDrawing(pachinkoPlayer, pachinko, block, expressionBlock) },
-            Material.EMERALD_BLOCK to { emeraldBrawing(pachinkoPlayer, pachinko, block, expressionBlock) }
+            Material.REDSTONE_BLOCK to { redstoneDrawing(pachinkoPlayer, pachinko, block, stagingBlock) },
+            Material.EMERALD_BLOCK to { emeraldBrawing(pachinkoPlayer, pachinko, block, stagingBlock) }
         )
-        judgementProcessing[expressionBlock.type]?.invoke() ?: return
+        judgementProcessing[stagingBlock.type]?.invoke() ?: return
     }
     private fun fastDrawing(block: Block, pachinkoPlayer: PachinkoPlayer, emeraldProbability: Int, redStoneProbability: Int) {
         val fastRandom = Random.nextInt(0, emeraldProbability) == 1
