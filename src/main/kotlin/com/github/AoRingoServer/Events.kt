@@ -1,43 +1,46 @@
 package com.github.AoRingoServer
 
-import com.github.AoRingoServer.pachinkoMachine.FalseSimplePachinko
-import com.github.AoRingoServer.pachinkoMachine.PachinkoMachines
-import com.github.AoRingoServer.pachinkoMachine.SimplePachinko
+import com.github.AoRingoServer.common.Pachinko
 import org.bukkit.ChatColor
-import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.block.CommandBlock
+import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.hanging.HangingBreakByEntityEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.Plugin
 
-class Events(val plugin: Plugin) : Listener {
+class Events(private val plugin: Plugin) : Listener {
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         val player = e.player
-        val pachinkoPlayer = PachinkoPlayer(player, plugin)
-        val block = e.block
         val pickel = player.inventory.itemInMainHand
-        val pickelName = "${ChatColor.GOLD}採掘パチンコ"
-        val judgementBlock = block.location.clone().add(0.0, -2.0, 0.0).block
-        val patinkoMachine = mapOf<String, PachinkoMachines>(
-            "simple" to SimplePachinko(),
-            "falseSimple" to FalseSimplePachinko()
-        )
-        if (pickel.type != Material.IRON_PICKAXE || pickel.itemMeta?.displayName != pickelName) {
+        val pachinkoPlayer = PachinkoPlayer(player, plugin)
+        val pachinko = Pachinko()
+        val block = e.block
+        val stagingBlock = block.location.clone().add(0.0, -1.0, 0.0).block
+        val pachinkoMachine = pachinko.pachinkoMachine
+        val pachinkoManager = PachinkoManager(plugin)
+        val pachinkoType = pachinkoManager.acquisitionPachinkoType(block)
+        if (!pachinko.checkaPachinkoPickel(pickel)) {
             return
         }
         e.isCancelled = true
-        if (block.type != Material.EMERALD_ORE || judgementBlock.type != Material.COMMAND_BLOCK) {
+        if (block.type != pachinko.breakBlockType) {
             return
         }
-        val commandBlock = judgementBlock.state as CommandBlock
-        val judgementMessage = commandBlock.command
         e.isCancelled = true
+        if (pachinkoType == null) {
+            player.sendMessage("${ChatColor.RED}このパチンコ台はまだ未設定です")
+            return
+        }
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1f)
-        patinkoMachine[judgementMessage]?.shoot(block, pachinkoPlayer) ?: return
+        val usePachinkoBallCount = pachinkoMachine[pachinkoType]?.acquisitionUseBallCount()
+        if (!pachinko.consumptionPachinkoBall(player, usePachinkoBallCount?:return)) {
+            return
+        }
+        pachinkoMachine[pachinkoType]?.shoot(block, pachinkoPlayer) ?: return
     }
     @EventHandler
     fun onPlayerToggleSneak(e: PlayerToggleSneakEvent) {
@@ -50,5 +53,13 @@ class Events(val plugin: Plugin) : Listener {
             player.inventory.setItemInMainHand(offhandItem)
             player.inventory.setItemInOffHand(item)
         }
+    }
+    @EventHandler
+    fun onHangingBreakByEntity(e: HangingBreakByEntityEvent) {
+        val entity = e.entity
+        val monitorTag = "monitor"
+        if (entity.type != EntityType.PAINTING) { return }
+        if (!entity.scoreboardTags.contains(monitorTag)) { return }
+        e.isCancelled = true
     }
 }

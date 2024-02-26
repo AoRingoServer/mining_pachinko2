@@ -4,5 +4,6 @@ import com.github.AoRingoServer.PachinkoPlayer
 import org.bukkit.block.Block
 
 interface PachinkoMachines {
+    fun acquisitionUseBallCount(): Int
     fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer)
 }

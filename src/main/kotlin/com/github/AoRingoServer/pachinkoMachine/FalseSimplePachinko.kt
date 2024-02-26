@@ -6,6 +6,9 @@ import org.bukkit.block.Block
 
 class FalseSimplePachinko : PachinkoMachines {
     private val simplePachinko = SimplePachinko()
+    override fun acquisitionUseBallCount(): Int {
+        return 1
+    }
     override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
         val config = PluginData.DataManager.config
         val emeraldProbability = config?.get("falseSimple.emeraldProbability").toString().toInt()

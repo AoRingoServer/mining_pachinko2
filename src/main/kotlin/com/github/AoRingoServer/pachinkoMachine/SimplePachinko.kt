@@ -2,7 +2,6 @@ package com.github.AoRingoServer.pachinkoMachine
 
 import com.github.AoRingoServer.PachinkoPlayer
 import com.github.AoRingoServer.PluginData
-import com.github.AoRingoServer.common.ItemManager
 import com.github.AoRingoServer.common.Pachinko
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -16,6 +15,9 @@ class SimplePachinko : PachinkoMachines {
     private val redStoneHitMessage = "${ChatColor.RED}1/2チャンス！"
     private val emeraldHitMessage = "${ChatColor.GREEN}HIT!!"
     private val amount = 50
+    override fun acquisitionUseBallCount(): Int {
+        return 1
+    }
     override fun shoot(block: Block, pachinkoPlayer: PachinkoPlayer) {
         val config = PluginData.DataManager.config
         val emeraldProbability = config?.get("simple.probability").toString().toInt()
@@ -30,7 +32,6 @@ class SimplePachinko : PachinkoMachines {
             Material.REDSTONE_BLOCK to { redstoneDrawing(pachinkoPlayer, pachinko, block, expressionBlock) },
             Material.EMERALD_BLOCK to { emeraldBrawing(pachinkoPlayer, pachinko, block, expressionBlock) }
         )
-        if (!ItemManager().reducePachinkoBall(pachinkoPlayer.player, countUsePachinkoBall)) { return }
         judgementProcessing[expressionBlock.type]?.invoke() ?: return
     }
     private fun fastDrawing(block: Block, pachinkoPlayer: PachinkoPlayer, emeraldProbability: Int, redStoneProbability: Int) {

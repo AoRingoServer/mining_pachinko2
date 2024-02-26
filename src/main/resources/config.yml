@@ -2,3 +2,8 @@ simple:
   probability: 60
 falseSimple:
   emeraldProbability: 120
+monitored:
+  fastProbability : 100
+  red : 5
+  green : 35
+  blue : 60
