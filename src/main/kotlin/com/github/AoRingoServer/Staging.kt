@@ -10,11 +10,11 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
 class Staging(private val plugin: Plugin) {
-    fun blinkingDisplay(pachinkoPlayer: PachinkoPlayer, message: String, sound: Sound, block: Block? = null) {
+    fun blinkingDisplay(pachinkoPlayer: PachinkoPlayer, message: String, sound: Sound, breakBlock: Block? = null) {
         val interval = 9L
         var c = 8
-        if (block != null) {
-            blockBreak(block)
+        if (breakBlock != null) {
+            blockBreak(breakBlock)
         }
         val player = pachinkoPlayer.player
         player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 20, 255))
@@ -28,8 +28,8 @@ class Staging(private val plugin: Plugin) {
                 player.playSound(player, sound, 1f, 1f)
                 c --
                 if (c == 0) {
-                    if (block != null) {
-                        blockCancellationBreak(block)
+                    if (breakBlock != null) {
+                        blockCancellationBreak(breakBlock)
                     }
                     this.cancel()
                 }

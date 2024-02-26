@@ -7,6 +7,7 @@ import com.github.AoRingoServer.pachinkoMachine.MonitoredPachinko
 import com.github.AoRingoServer.pachinkoMachine.PachinkoMachines
 import com.github.AoRingoServer.pachinkoMachine.SimplePachinko
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
@@ -27,6 +28,9 @@ class Pachinko {
         staging.blinkingDisplay(pachinkoPlayer, "当たり！！", Sound.ENTITY_EXPERIENCE_ORB_PICKUP, block)
     }
     fun consumptionPachinkoBall(player: Player, amount: Int): Boolean {
+        if (player.gameMode == GameMode.CREATIVE) {
+            return true
+        }
         val errorMessage = "${ChatColor.RED}パチンコ玉をオフハンドに持ってください\n(統合版の場合 パチンコ玉を持ってしゃがむとオフハンドに入ります)"
         val item = PachinkoItem().pachinkoBall()
         item.amount = 1

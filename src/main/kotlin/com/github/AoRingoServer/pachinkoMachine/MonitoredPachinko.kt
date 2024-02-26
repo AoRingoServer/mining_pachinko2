@@ -16,7 +16,7 @@ class MonitoredPachinko : PachinkoMachines {
         val config = PluginData.DataManager.config
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
         when (stagingBlock.type) {
-            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, stagingBlock, probabilityBlock, buttonPushMessage, staging)
+            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, block, stagingBlock, probabilityBlock, buttonPushMessage, staging)
             probabilityBlock -> resetWool(stagingBlock)
         }
     }
@@ -24,11 +24,11 @@ class MonitoredPachinko : PachinkoMachines {
     override fun acquisitionUseBallCount(): Int {
         return 1
     }
-    private fun fastDrawing(pachinkoPlayer: PachinkoPlayer, fastProbability: Int, block: Block, probabilityBlock: Material, pushMessage: String, staging: Staging) {
+    private fun fastDrawing(pachinkoPlayer: PachinkoPlayer, fastProbability: Int, block: Block, stagingBlock: Block, probabilityBlock: Material, pushMessage: String, staging: Staging) {
         val fastDrawing = Random.nextInt(0, fastProbability) == 0
         if (!fastDrawing) { return }
-        block.type = probabilityBlock
-        staging.blinkingDisplay(pachinkoPlayer, pushMessage, Sound.ENTITY_GENERIC_EXPLODE)
+        stagingBlock.type = probabilityBlock
+        staging.blinkingDisplay(pachinkoPlayer, pushMessage, Sound.ENTITY_GENERIC_EXPLODE, block)
     }
     private fun colorDrawing(block: Block) {
         val redProbability = PluginData.DataManager.config?.get("monitored.red").toString().toInt()
