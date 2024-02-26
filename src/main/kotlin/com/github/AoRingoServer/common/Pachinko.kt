@@ -1,6 +1,7 @@
 package com.github.AoRingoServer.common
 
 import com.github.AoRingoServer.PachinkoPlayer
+import com.github.AoRingoServer.Staging
 import com.github.AoRingoServer.pachinkoMachine.FalseSimplePachinko
 import com.github.AoRingoServer.pachinkoMachine.MonitoredPachinko
 import com.github.AoRingoServer.pachinkoMachine.PachinkoMachines
@@ -19,11 +20,11 @@ class Pachinko {
         "falseSimple" to FalseSimplePachinko(),
         "monitored" to MonitoredPachinko()
     )
-    fun hit(pachinkoPlayer: PachinkoPlayer, block: Block, amount: Int) {
+    fun hit(pachinkoPlayer: PachinkoPlayer, block: Block, amount: Int, staging: Staging) {
         val player = pachinkoPlayer.player
         ItemManager().givePachinkoBall(pachinkoPlayer.player, amount)
         player.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f)
-        pachinkoPlayer.blinkingDisplay("当たり！！", Sound.ENTITY_EXPERIENCE_ORB_PICKUP, block)
+        staging.blinkingDisplay(pachinkoPlayer, "当たり！！", Sound.ENTITY_EXPERIENCE_ORB_PICKUP, block)
     }
     fun consumptionPachinkoBall(player: Player, amount: Int): Boolean {
         val errorMessage = "${ChatColor.RED}パチンコ玉をオフハンドに持ってください\n(統合版の場合 パチンコ玉を持ってしゃがむとオフハンドに入ります)"

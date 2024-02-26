@@ -2,6 +2,7 @@ package com.github.AoRingoServer.pachinkoMachine
 
 import com.github.AoRingoServer.PachinkoPlayer
 import com.github.AoRingoServer.PluginData
+import com.github.AoRingoServer.Staging
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -9,13 +10,13 @@ import org.bukkit.block.Block
 import kotlin.random.Random
 
 class MonitoredPachinko : PachinkoMachines {
-    override fun shoot(block: Block,stagingBlock:Block, pachinkoPlayer: PachinkoPlayer) {
+    override fun shoot(block: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
         val probabilityBlock = Material.SEA_LANTERN
         val buttonPushMessage = "${ChatColor.YELLOW}ボタンを押せ！！！"
         val config = PluginData.DataManager.config
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
         when (stagingBlock.type) {
-            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, stagingBlock, probabilityBlock, buttonPushMessage)
+            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, stagingBlock, probabilityBlock, buttonPushMessage, staging)
             probabilityBlock -> resetWool(stagingBlock)
         }
     }
@@ -23,11 +24,11 @@ class MonitoredPachinko : PachinkoMachines {
     override fun acquisitionUseBallCount(): Int {
         return 1
     }
-    private fun fastDrawing(pachinkoPlayer: PachinkoPlayer, fastProbability: Int, block: Block, probabilityBlock: Material, pushMessage: String) {
+    private fun fastDrawing(pachinkoPlayer: PachinkoPlayer, fastProbability: Int, block: Block, probabilityBlock: Material, pushMessage: String, staging: Staging) {
         val fastDrawing = Random.nextInt(0, fastProbability) == 0
         if (!fastDrawing) { return }
         block.type = probabilityBlock
-        pachinkoPlayer.blinkingDisplay(pushMessage, Sound.ENTITY_GENERIC_EXPLODE)
+        staging.blinkingDisplay(pachinkoPlayer, pushMessage, Sound.ENTITY_GENERIC_EXPLODE)
     }
     private fun colorDrawing(block: Block) {
         val redProbability = PluginData.DataManager.config?.get("monitored.red").toString().toInt()
