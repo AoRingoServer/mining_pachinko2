@@ -2,12 +2,14 @@ package com.github.AoRingoServer
 
 import com.github.AoRingoServer.common.Pachinko
 import org.bukkit.ChatColor
+import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.hanging.HangingBreakByEntityEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.Plugin
 
@@ -62,5 +64,14 @@ class Events(private val plugin: Plugin) : Listener {
         if (entity.type != EntityType.PAINTING) { return }
         if (!entity.scoreboardTags.contains(monitorTag)) { return }
         e.isCancelled = true
+    }
+    @EventHandler
+    fun onButtonPush(e:PlayerInteractEvent){
+        val player = e.player
+        val button = e.clickedBlock?:return
+        val pachinkoButton = PachinkoButton()
+        val buttonType = Material.OAK_BUTTON
+        if (button.type != buttonType) { return }
+        val connectionBlock = pachinkoButton.acquisitionConnectionBlock(button)?:return
     }
 }
