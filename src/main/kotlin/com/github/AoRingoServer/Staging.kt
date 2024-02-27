@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
 class Staging(private val plugin: Plugin) {
-    fun blinkingDisplay(pachinkoPlayer: PachinkoPlayer, message: String, sound: Sound, breakBlock: Block? = null) {
+    fun blinkingDisplay(pachinkoPlayer: PachinkoPlayer, message: String, sound: Sound, breakBlock: Block? = null, subMessage: String = "") {
         val interval = 9L
         var c = 8
         if (breakBlock != null) {
@@ -21,9 +21,9 @@ class Staging(private val plugin: Plugin) {
         object : BukkitRunnable() {
             override fun run() {
                 if (c % 2 == 0) {
-                    player.sendTitle("${ChatColor.YELLOW}$message", "", 5, 5, 5)
+                    player.sendTitle("${ChatColor.YELLOW}$message", subMessage, 5, 5, 5)
                 } else {
-                    player.sendTitle(message, "", 5, 5, 5)
+                    player.sendTitle(message, subMessage, 5, 5, 5)
                 }
                 player.playSound(player, sound, 1f, 1f)
                 c --
