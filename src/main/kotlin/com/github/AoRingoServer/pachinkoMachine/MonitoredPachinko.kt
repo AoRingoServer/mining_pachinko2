@@ -63,4 +63,16 @@ class MonitoredPachinko : PachinkoMachines, PachinkoWithButtons {
         staging.blinkingDisplay(pachinkoPlayer, message, Sound.ITEM_TOTEM_USE, connectionBlock)
         colorDrawing(stagingBlock)
     }
+    fun continuousDrawing(block: Block):Boolean{
+        val config = PluginData.DataManager.config ?:return false
+        val continuousRateKeys = mapOf(
+            Material.RED_WOOL to "redContinuousRate",
+            Material.BLUE_WOOL to "blueContinuousRate",
+            Material.GREEN_WOOL to "greenContinuousRate"
+        )
+        val  continuousRateKey = continuousRateKeys[block.type]?:return false
+        val probability = config.getString(continuousRateKey)?.toInt() ?:0
+        val hundredDrawing = Random.nextInt(1, 100)
+        return hundredDrawing <= probability
+    }
 }
