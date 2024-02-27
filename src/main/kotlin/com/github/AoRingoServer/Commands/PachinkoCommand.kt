@@ -39,10 +39,6 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
                     }
                 }
             },
-            "resetPachinkoType" to {
-                pachinkoManager.resetPachinkoType(block)
-                sender.sendMessage("${ChatColor.RED}パチンコの種類設定をリセットしました")
-            },
             "acquisitionPachinkoType" to {
                 val pachinkoType = pachinkoManager.acquisitionPachinkoType(block)
                 sender.sendMessage("${ChatColor.YELLOW}[パチンコ種類] $pachinkoType")
