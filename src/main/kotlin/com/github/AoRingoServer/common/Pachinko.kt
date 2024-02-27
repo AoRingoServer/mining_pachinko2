@@ -13,13 +13,14 @@ import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.Plugin
 
-class Pachinko {
+class Pachinko(plugin: Plugin) {
     val breakBlockType = Material.EMERALD_ORE
     val pachinkoMachine = mapOf<String, PachinkoMachines>(
-        "simple" to SimplePachinko(),
-        "falseSimple" to FalseSimplePachinko(),
-        "monitored" to MonitoredPachinko()
+        "simple" to SimplePachinko(plugin),
+        "falseSimple" to FalseSimplePachinko(plugin),
+        "monitored" to MonitoredPachinko(plugin)
     )
     fun hit(pachinkoPlayer: PachinkoPlayer, block: Block, amount: Int, staging: Staging) {
         val player = pachinkoPlayer.player

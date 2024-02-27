@@ -33,7 +33,7 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
             "setPachinkoType" to { args: Array<out String> ->
                 if (args.size == 2) {
                     val entry = args[1]
-                    if (block.type == Pachinko().breakBlockType) {
+                    if (block.type == Pachinko(plugin).breakBlockType) {
                         pachinkoManager.addPachinkoType(block, entry)
                         sender.sendMessage("${ChatColor.GREEN}パチンコの種類設定をしました")
                     }
@@ -51,7 +51,7 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
         if (sender !is Player) { return mutableListOf() }
         return when (args.size) {
             1 -> subCommandMap(sender).keys.toMutableList()
-            2 -> Pachinko().pachinkoMachine.keys.toMutableList()
+            2 -> Pachinko(plugin).pachinkoMachine.keys.toMutableList()
             else -> mutableListOf()
         }
     }

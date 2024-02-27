@@ -4,9 +4,10 @@ import com.github.AoRingoServer.PachinkoPlayer
 import com.github.AoRingoServer.PluginData
 import com.github.AoRingoServer.Staging
 import org.bukkit.block.Block
+import org.bukkit.plugin.Plugin
 
-class FalseSimplePachinko : PachinkoMachines {
-    private val simplePachinko = SimplePachinko()
+class FalseSimplePachinko(val plugin: Plugin) : PachinkoMachines {
+    private val simplePachinko = SimplePachinko(plugin)
     override fun acquisitionUseBallCount(): Int {
         return 1
     }

@@ -21,7 +21,7 @@ class Events(private val plugin: Plugin) : Listener {
         val player = e.player
         val pickel = player.inventory.itemInMainHand
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
-        val pachinko = Pachinko()
+        val pachinko = Pachinko(plugin)
         val block = e.block
         val stagingBlock = block.location.clone().add(0.0, -1.0, 0.0).block
         val pachinkoMachine = pachinko.pachinkoMachine
@@ -83,7 +83,7 @@ class Events(private val plugin: Plugin) : Listener {
         val pachinkoManager = PachinkoManager(plugin)
         val pachinkoType = pachinkoManager.acquisitionPachinkoType(connectionBlock)
         val pachinkoMap = mapOf(
-            "monitored" to MonitoredPachinko()
+            "monitored" to MonitoredPachinko(plugin)
         )
         if (!pachinkoMap.keys.contains(pachinkoType)) { return }
         pachinkoMap[pachinkoType]?.pushingButton(button, connectionBlock, stagingBlock, pachinkoPlayer, staging)

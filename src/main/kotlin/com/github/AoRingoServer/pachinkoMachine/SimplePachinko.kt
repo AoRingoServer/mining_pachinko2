@@ -9,9 +9,10 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.block.Block
+import org.bukkit.plugin.Plugin
 import kotlin.random.Random
 
-class SimplePachinko : PachinkoMachines {
+class SimplePachinko(val plugin: Plugin) : PachinkoMachines {
     private val redStoneHitMessage = "${ChatColor.RED}1/2チャンス！"
     private val emeraldHitMessage = "${ChatColor.GREEN}HIT!!"
     private val amount = 50
@@ -25,7 +26,7 @@ class SimplePachinko : PachinkoMachines {
         initialDrawing(block, stagingBlock, pachinkoPlayer, emeraldProbability, redStoneProbability, staging)
     }
     fun initialDrawing(block: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, emeraldProbability: Int, redStoneProbability: Int, staging: Staging) {
-        val pachinko = Pachinko()
+        val pachinko = Pachinko(plugin)
         val judgementProcessing = mapOf(
             Material.BEDROCK to { fastDrawing(block, pachinkoPlayer, emeraldProbability, redStoneProbability, staging) },
             Material.REDSTONE_BLOCK to { redstoneDrawing(pachinkoPlayer, pachinko, block, stagingBlock, staging) },

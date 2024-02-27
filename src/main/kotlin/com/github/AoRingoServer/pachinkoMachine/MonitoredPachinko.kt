@@ -1,5 +1,6 @@
 package com.github.AoRingoServer.pachinkoMachine
 
+import com.github.AoRingoServer.PachinkoManager
 import com.github.AoRingoServer.PachinkoPlayer
 import com.github.AoRingoServer.PluginData
 import com.github.AoRingoServer.Staging
@@ -7,9 +8,10 @@ import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
+import org.bukkit.plugin.Plugin
 import kotlin.random.Random
 
-class MonitoredPachinko : PachinkoMachines, PachinkoWithButtons {
+class MonitoredPachinko(private val plugin: Plugin) : PachinkoMachines, PachinkoWithButtons {
     private val probabilityBlock = Material.SEA_LANTERN
     override fun shoot(block: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
         val config = PluginData.DataManager.config
@@ -17,6 +19,7 @@ class MonitoredPachinko : PachinkoMachines, PachinkoWithButtons {
         when (stagingBlock.type) {
             Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, block, stagingBlock, probabilityBlock, staging)
             probabilityBlock -> resetWool(stagingBlock)
+            Material.GREEN_WOOL, Material.BLUE_WOOL, Material.RED_WOOL -> continuation(stagingBlock, pachinkoPlayer, staging)
         }
     }
 
@@ -63,16 +66,39 @@ class MonitoredPachinko : PachinkoMachines, PachinkoWithButtons {
         staging.blinkingDisplay(pachinkoPlayer, message, Sound.ITEM_TOTEM_USE, connectionBlock)
         colorDrawing(stagingBlock)
     }
-    fun continuousDrawing(block: Block):Boolean{
-        val config = PluginData.DataManager.config ?:return false
+    private fun continuousDrawing(block: Block): Boolean {
+        val config = PluginData.DataManager.config ?: return false
         val continuousRateKeys = mapOf(
-            Material.RED_WOOL to "redContinuousRate",
-            Material.BLUE_WOOL to "blueContinuousRate",
-            Material.GREEN_WOOL to "greenContinuousRate"
+            Material.RED_WOOL to "monitored.redContinuousRate",
+            Material.BLUE_WOOL to "monitored.blueContinuousRate",
+            Material.GREEN_WOOL to "monitored.greenContinuousRate"
         )
-        val  continuousRateKey = continuousRateKeys[block.type]?:return false
-        val probability = config.getString(continuousRateKey)?.toInt() ?:0
+        val continuousRateKey = continuousRateKeys[block.type] ?: return false
+        val probability = config.getString(continuousRateKey)?.toInt() ?: 0
         val hundredDrawing = Random.nextInt(1, 100)
         return hundredDrawing <= probability
+    }
+    private fun continuation(block: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
+        val pachinkoManager = PachinkoManager(plugin)
+        val max = 3
+        val player = pachinkoPlayer.player
+        val pachinkoCountKey = pachinkoManager.pachinkoCountKey
+        val count = pachinkoManager.addcontinuousCount(block) - 1
+        val remainingCount = max - count
+        player.sendTitle("${ChatColor.AQUA}$remainingCount", "")
+        if (count == max) {
+            pachinkoManager.setTemporaryIntData(block, pachinkoCountKey, 0)
+            resetWool(block)
+            return
+        }
+        if (continuousDrawing(block)) {
+            reContinuation(block, pachinkoPlayer, staging, pachinkoManager)
+        }
+    }
+    private fun reContinuation(block: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging, pachinkoManager: PachinkoManager) {
+        val message = "${ChatColor.YELLOW}継続"
+        val pachinkoCountKey = pachinkoManager.pachinkoCountKey
+        pachinkoManager.setTemporaryIntData(block, pachinkoCountKey, 0)
+        staging.blinkingDisplay(pachinkoPlayer, message, Sound.BLOCK_BELL_USE)
     }
 }
