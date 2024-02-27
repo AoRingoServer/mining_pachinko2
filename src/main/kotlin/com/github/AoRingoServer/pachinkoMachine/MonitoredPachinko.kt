@@ -12,12 +12,10 @@ import kotlin.random.Random
 class MonitoredPachinko : PachinkoMachines, PachinkoWithButtons {
     private val probabilityBlock = Material.SEA_LANTERN
     override fun shoot(block: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
-        val buttonPushMessage = "${ChatColor.YELLOW}ボタンを押せ！！！"
-        val buttonPushSubMessage = "${ChatColor.RED}ラッシュを獲得しろ！！"
         val config = PluginData.DataManager.config
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
         when (stagingBlock.type) {
-            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, block, stagingBlock, probabilityBlock, buttonPushMessage, buttonPushSubMessage, staging)
+            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, block, stagingBlock, probabilityBlock, staging)
             probabilityBlock -> resetWool(stagingBlock)
         }
     }
@@ -25,17 +23,20 @@ class MonitoredPachinko : PachinkoMachines, PachinkoWithButtons {
     override fun acquisitionUseBallCount(): Int {
         return 1
     }
-    private fun fastDrawing(pachinkoPlayer: PachinkoPlayer, fastProbability: Int, block: Block, stagingBlock: Block, probabilityBlock: Material, pushMessage: String, subTitle: String, staging: Staging) {
+    private fun fastDrawing(pachinkoPlayer: PachinkoPlayer, fastProbability: Int, block: Block, stagingBlock: Block, probabilityBlock: Material, staging: Staging) {
         val fastDrawing = Random.nextInt(0, fastProbability) == 0
+        val buttonPushMessage = "${ChatColor.YELLOW}ボタンを押せ！！！"
+        val buttonPushSubMessage = "${ChatColor.RED}ラッシュを獲得しろ！！"
         if (!fastDrawing) { return }
         stagingBlock.type = probabilityBlock
-        staging.blinkingDisplay(pachinkoPlayer, pushMessage, Sound.BLOCK_BELL_USE, block, subTitle)
+        staging.blinkingDisplay(pachinkoPlayer, buttonPushMessage, Sound.BLOCK_BELL_USE, block, buttonPushSubMessage)
     }
     private fun colorDrawing(block: Block) {
+        val hundredDrawing = Random.nextInt(1,100)
         val redProbability = PluginData.DataManager.config?.get("monitored.red").toString().toInt()
-        val redDrawing = Random.nextInt(0, redProbability) == 0
+        val redDrawing = hundredDrawing <= redProbability
         val greenProbability = PluginData.DataManager.config?.get("monitored.green").toString().toInt()
-        val greenDrawing = Random.nextInt(0, greenProbability) == 0
+        val greenDrawing = hundredDrawing <= greenProbability
         block.type = when {
             redDrawing -> Material.RED_WOOL
             greenDrawing -> Material.GREEN_WOOL
