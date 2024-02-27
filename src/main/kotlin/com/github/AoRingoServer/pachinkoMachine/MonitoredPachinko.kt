@@ -32,11 +32,12 @@ class MonitoredPachinko : PachinkoMachines, PachinkoWithButtons {
         staging.blinkingDisplay(pachinkoPlayer, buttonPushMessage, Sound.BLOCK_BELL_USE, block, buttonPushSubMessage)
     }
     private fun colorDrawing(block: Block) {
-        val hundredDrawing = Random.nextInt(1,100)
+        val hundredDrawing = Random.nextInt(1, 100)
         val redProbability = PluginData.DataManager.config?.get("monitored.red").toString().toInt()
         val redDrawing = hundredDrawing <= redProbability
         val greenProbability = PluginData.DataManager.config?.get("monitored.green").toString().toInt()
-        val greenDrawing = hundredDrawing <= greenProbability
+        val greenAddingRed = greenProbability + redProbability
+        val greenDrawing = hundredDrawing <= greenAddingRed
         block.type = when {
             redDrawing -> Material.RED_WOOL
             greenDrawing -> Material.GREEN_WOOL
