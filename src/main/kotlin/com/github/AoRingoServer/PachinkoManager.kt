@@ -8,7 +8,9 @@ class PachinkoManager(private val plugin: Plugin) {
     private val pachinkoFileName = "pachinkoData"
     val pachinkoCountKey = "pachinkoCountKey"
     private val yml = Yml(plugin)
-    val pachinkoData = yml.getYml(pachinkoFileName)
+    private val pachinkoData = yml.getYml(pachinkoFileName)
+    private val pachinkoTypeKey = "type"
+    private val monitorIDKey = "monitorID"
     private fun acquisitionBlockLocation(block: Block): String {
         val blockLocation = block.location
         return "${block.world.name}x${blockLocation.x.toInt()}y${blockLocation.y.toInt()}z${blockLocation.z.toInt()}"
@@ -21,22 +23,22 @@ class PachinkoManager(private val plugin: Plugin) {
     }
     fun addPachinkoType(block: Block, pachinkoMachine: String) {
         val location = acquisitionBlockLocation(block)
-        val key = "$location.type"
+        val key = "$location.$pachinkoTypeKey"
         additionalDataToPluginDataFile(key, pachinkoMachine)
     }
     fun acquisitionPachinkoType(block: Block): String? {
         val location = acquisitionBlockLocation(block)
-        val key = "$location.type"
+        val key = "$location.$pachinkoTypeKey"
         return acquisitionDataToPluginDataFile(key)
     }
     fun addMonitorID(block: Block, monitorID: String) {
         val location = acquisitionBlockLocation(block)
-        val key = "$location.monitorID"
+        val key = "$location.$monitorIDKey"
         additionalDataToPluginDataFile(key, monitorID)
     }
     fun acquisitionMonitorID(block: Block): String? {
         val location = acquisitionBlockLocation(block)
-        val key = "$location.monitorID"
+        val key = "$location.$monitorIDKey"
         return acquisitionDataToPluginDataFile(key)
     }
     fun addContinuousCount(block: Block): Int {
