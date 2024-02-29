@@ -5,12 +5,10 @@ import com.github.AoRingoServer.pachinkoMachine.MonitoredPachinko
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.hanging.HangingBreakByEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.Plugin
@@ -58,14 +56,6 @@ class Events(private val plugin: Plugin) : Listener {
             player.inventory.setItemInMainHand(offhandItem)
             player.inventory.setItemInOffHand(item)
         }
-    }
-    @EventHandler
-    fun onHangingBreakByEntity(e: HangingBreakByEntityEvent) {
-        val entity = e.entity
-        val monitorTag = "monitor"
-        if (entity.type != EntityType.PAINTING) { return }
-        if (!entity.scoreboardTags.contains(monitorTag)) { return }
-        e.isCancelled = true
     }
     @EventHandler
     fun onButtonPush(e: PlayerInteractEvent) {

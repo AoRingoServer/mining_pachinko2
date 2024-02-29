@@ -83,7 +83,7 @@ class MonitoredPachinko(private val plugin: Plugin) : PachinkoMachines, Pachinko
         val max = 3
         val player = pachinkoPlayer.player
         val pachinkoCountKey = pachinkoManager.pachinkoCountKey
-        val count = pachinkoManager.addcontinuousCount(block) - 1
+        val count = pachinkoManager.addContinuousCount(block) - 1
         val remainingCount = max - count
         player.sendTitle("${ChatColor.AQUA}$remainingCount", "")
         if (count == max) {

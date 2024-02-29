@@ -8,20 +8,38 @@ class PachinkoManager(private val plugin: Plugin) {
     private val pachinkoFileName = "pachinkoData"
     val pachinkoCountKey = "pachinkoCountKey"
     private val yml = Yml(plugin)
+    val pachinkoData = yml.getYml(pachinkoFileName)
     private fun acquisitionBlockLocation(block: Block): String {
         val blockLocation = block.location
         return "${block.world.name}x${blockLocation.x.toInt()}y${blockLocation.y.toInt()}z${blockLocation.z.toInt()}"
     }
-    fun addPachinkoType(block: Block, pachinkoMachine: String) {
-        val key = acquisitionBlockLocation(block)
-        yml.setYml(plugin, pachinkoFileName, key, pachinkoMachine)
+    private fun additionalDataToPluginDataFile(key: String, value: String) {
+        pachinkoData.set(key, value)
     }
-    fun acquisitionPachinkoType(block: Block): String? {
-        val key = acquisitionBlockLocation(block)
-        val pachinkoData = yml.getYml(pachinkoFileName)
+    private fun acquisitionDataToPluginDataFile(key: String): String? {
         return pachinkoData.getString(key)
     }
-    fun addcontinuousCount(block: Block): Int {
+    fun addPachinkoType(block: Block, pachinkoMachine: String) {
+        val location = acquisitionBlockLocation(block)
+        val key = "$location.type"
+        additionalDataToPluginDataFile(key, pachinkoMachine)
+    }
+    fun acquisitionPachinkoType(block: Block): String? {
+        val location = acquisitionBlockLocation(block)
+        val key = "$location.type"
+        return acquisitionDataToPluginDataFile(key)
+    }
+    fun addMonitorID(block: Block, monitorID: String) {
+        val location = acquisitionBlockLocation(block)
+        val key = "$location.monitorID"
+        additionalDataToPluginDataFile(key, monitorID)
+    }
+    fun acquisitionMonitorID(block: Block): String? {
+        val location = acquisitionBlockLocation(block)
+        val key = "$location.monitorID"
+        return acquisitionDataToPluginDataFile(key)
+    }
+    fun addContinuousCount(block: Block): Int {
         val count = acquisitionTemporaryIntData(block, pachinkoCountKey) ?: 0
         val newCount = count + 1
         setTemporaryIntData(block, pachinkoCountKey, newCount)
