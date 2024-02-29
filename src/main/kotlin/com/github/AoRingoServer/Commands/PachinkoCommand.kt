@@ -39,7 +39,7 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
                     }
                 }
             },
-            "acquisitionPachinkoType" to {
+            "getPachinkoType" to {
                 val pachinkoType = pachinkoManager.acquisitionPachinkoType(block)
                 sender.sendMessage("${ChatColor.YELLOW}[パチンコ種類] $pachinkoType")
             }
