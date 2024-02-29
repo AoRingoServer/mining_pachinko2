@@ -3,6 +3,7 @@ package com.github.AoRingoServer
 import org.bukkit.block.Block
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.plugin.Plugin
+import java.io.File
 
 class PachinkoManager(private val plugin: Plugin) {
     private val pachinkoFileName = "pachinkoData"
@@ -11,12 +12,18 @@ class PachinkoManager(private val plugin: Plugin) {
     private val pachinkoData = yml.getYml(pachinkoFileName)
     private val pachinkoTypeKey = "type"
     private val monitorIDKey = "monitorID"
+    fun makeImageFolder() {
+        val folder = File(plugin.dataFolder, "images/")
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+    }
     private fun acquisitionBlockLocation(block: Block): String {
         val blockLocation = block.location
         return "${block.world.name}x${blockLocation.x.toInt()}y${blockLocation.y.toInt()}z${blockLocation.z.toInt()}"
     }
     private fun additionalDataToPluginDataFile(key: String, value: String) {
-        pachinkoData.set(key, value)
+        yml.setYml(plugin, pachinkoFileName, key, value)
     }
     private fun acquisitionDataToPluginDataFile(key: String): String? {
         return pachinkoData.getString(key)

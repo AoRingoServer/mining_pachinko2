@@ -42,6 +42,15 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
             "getPachinkoType" to {
                 val pachinkoType = pachinkoManager.acquisitionPachinkoType(block)
                 sender.sendMessage("${ChatColor.YELLOW}[パチンコ種類] $pachinkoType")
+            },
+            "setMonitorID" to { args: Array<out String> ->
+                if (args.size == 2) {
+                    val entry = args[1]
+                    if (block.type == Pachinko(plugin).breakBlockType) {
+                        pachinkoManager.addMonitorID(block, entry)
+                        sender.sendMessage("${ChatColor.GREEN}連携モニターのID設定をしました")
+                    }
+                }
             }
         )
         return subCommandMap

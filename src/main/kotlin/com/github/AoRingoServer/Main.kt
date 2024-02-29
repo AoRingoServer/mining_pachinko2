@@ -9,6 +9,7 @@ class Main : JavaPlugin() {
         server.pluginManager.registerEvents(Events(this), this)
         getCommand("pachinko")!!.setExecutor(PachinkoCommand(this))
         this.dataFolder.mkdirs()
+        PachinkoManager(this).makeImageFolder()
         saveResource("config.yml", true)
         PluginData.DataManager.config = Yml(this).loadConfig()
     }
