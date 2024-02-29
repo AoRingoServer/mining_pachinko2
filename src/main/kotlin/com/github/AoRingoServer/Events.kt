@@ -60,6 +60,7 @@ class Events(private val plugin: Plugin) : Listener {
     @EventHandler
     fun onButtonPush(e: PlayerInteractEvent) {
         val player = e.player
+        val pachinko = Pachinko(plugin)
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
         val button = e.clickedBlock ?: return
         val pachinkoButton = PachinkoButton()
@@ -75,6 +76,7 @@ class Events(private val plugin: Plugin) : Listener {
         val pachinkoMap = mapOf(
             "monitored" to MonitoredPachinko(plugin)
         )
+        if (connectionBlock.type != pachinko.breakBlockType) { return }
         if (!pachinkoMap.keys.contains(pachinkoType)) { return }
         pachinkoMap[pachinkoType]?.pushingButton(button, connectionBlock, stagingBlock, pachinkoPlayer, staging)
     }
