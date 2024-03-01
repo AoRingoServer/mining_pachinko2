@@ -1,6 +1,7 @@
 package com.github.AoRingoServer.monitor
 
 import com.github.AoRingoServer.PachinkoManager
+import com.github.AoRingoServer.common.Pachinko
 import com.github.Ringoame196.Image
 import com.github.Ringoame196.ImageMapRenderer
 import org.bukkit.Bukkit
@@ -15,8 +16,8 @@ class MonitorManager() {
     private fun resetMpaInfo(mapView: MapView) {
         mapView.renderers.clear()
     }
-    fun displayImage(plugin: JavaPlugin, block: Block, imageName: String) {
-        val monitorID = PachinkoManager(plugin).acquisitionCoordinationMonitorID(block) ?: return
+    fun displayImage(plugin: JavaPlugin, block: Block, imageName: String, pachinko: Pachinko) {
+        val monitorID = PachinkoManager(plugin, pachinko).acquisitionCoordinationMonitorID(block) ?: return
         val monitor = getMonitor(monitorID)
         val image = Image().make(plugin, imageName)
         resetMpaInfo(monitor)

@@ -3,7 +3,7 @@ package com.github.AoRingoServer.pachinkoMachine
 import com.github.AoRingoServer.PachinkoManager
 import com.github.AoRingoServer.PachinkoPlayer
 import com.github.AoRingoServer.PluginData
-import com.github.AoRingoServer.Staging
+import com.github.AoRingoServer.common.Pachinko
 import com.github.AoRingoServer.monitor.MonitorManager
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -12,29 +12,35 @@ import org.bukkit.block.Block
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.random.Random
 
-class MonitoredPachinko(private val plugin: JavaPlugin) : PachinkoMachines, PachinkoWithButtons {
+class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pachinko) : PachinkoMachines, PachinkoWithButtons {
     private val probabilityBlock = Material.SEA_LANTERN
     private val monitorManager = MonitorManager()
-    override fun shoot(block: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
+    override fun shoot() {
         val config = PluginData.DataManager.config
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
-        when (stagingBlock.type) {
-            Material.WHITE_WOOL -> fastDrawing(pachinkoPlayer, fastProbability, block, stagingBlock, probabilityBlock, staging)
-            probabilityBlock -> resetWool(stagingBlock)
-            Material.GREEN_WOOL, Material.BLUE_WOOL, Material.RED_WOOL -> continuation(stagingBlock, pachinkoPlayer, staging)
+        when (pachinko.stagingBlock?.type) {
+            Material.WHITE_WOOL -> fastDrawing(pachinko.pachinkoPlayer, fastProbability, pachinko.breakBlock ?: return, pachinko.stagingBlock, probabilityBlock)
+            probabilityBlock -> resetWool(pachinko.stagingBlock)
+            Material.GREEN_WOOL, Material.BLUE_WOOL, Material.RED_WOOL -> continuation(pachinko.stagingBlock, pachinko.pachinkoPlayer)
         }
     }
 
     override fun acquisitionUseBallCount(): Int {
         return 1
     }
-    private fun fastDrawing(pachinkoPlayer: PachinkoPlayer, fastProbability: Int, block: Block, stagingBlock: Block, probabilityBlock: Material, staging: Staging) {
+    private fun fastDrawing(
+        pachinkoPlayer: PachinkoPlayer,
+        fastProbability: Int,
+        block: Block,
+        stagingBlock: Block,
+        probabilityBlock: Material
+    ) {
         val fastDrawing = Random.nextInt(0, fastProbability) == 0
         val buttonPushMessage = "${ChatColor.YELLOW}ボタンを押せ！！！"
         val buttonPushSubMessage = "${ChatColor.RED}ラッシュを獲得しろ！！"
         if (!fastDrawing) { return }
         stagingBlock.type = probabilityBlock
-        staging.blinkingDisplay(pachinkoPlayer, buttonPushMessage, Sound.BLOCK_BELL_USE, block, buttonPushSubMessage)
+        pachinko.blinkingDisplay(buttonPushMessage, Sound.BLOCK_BELL_USE, buttonPushSubMessage)
     }
     private fun colorDrawing(block: Block) {
         val hundredDrawing = Random.nextInt(1, 100)
@@ -53,20 +59,20 @@ class MonitoredPachinko(private val plugin: JavaPlugin) : PachinkoMachines, Pach
         displayBlock.type = Material.WHITE_WOOL
     }
 
-    override fun pushingButton(button: Block, connectionBlock: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
-        if (stagingBlock.type != probabilityBlock) { return }
-        val player = pachinkoPlayer.player
+    override fun pushingButton(button: Block) {
+        if (pachinko.stagingBlock.type != probabilityBlock) { return }
+        val player = pachinko.pachinkoPlayer.player
         val drawing = Random.nextInt(0, 2) == 0
         val message = "${ChatColor.YELLOW}ラッシュ獲得"
         val failureMessage = "${ChatColor.RED}獲得失敗"
         if (!drawing) {
             player.playSound(player, Sound.BLOCK_FIRE_EXTINGUISH, 1f, 1f)
-            resetWool(stagingBlock)
+            resetWool(pachinko.stagingBlock)
             player.sendTitle(failureMessage, "")
             return
         }
-        staging.blinkingDisplay(pachinkoPlayer, message, Sound.ITEM_TOTEM_USE, connectionBlock)
-        colorDrawing(stagingBlock)
+        pachinko.blinkingDisplay(message, Sound.ITEM_TOTEM_USE)
+        colorDrawing(pachinko.stagingBlock)
     }
     private fun continuousDrawing(block: Block): Boolean {
         val config = PluginData.DataManager.config ?: return false
@@ -80,8 +86,8 @@ class MonitoredPachinko(private val plugin: JavaPlugin) : PachinkoMachines, Pach
         val hundredDrawing = Random.nextInt(1, 100)
         return hundredDrawing <= probability
     }
-    private fun continuation(block: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
-        val pachinkoManager = PachinkoManager(plugin)
+    private fun continuation(block: Block, pachinkoPlayer: PachinkoPlayer) {
+        val pachinkoManager = PachinkoManager(plugin, pachinko)
         val max = 3
         val player = pachinkoPlayer.player
         val pachinkoCountKey = pachinkoManager.pachinkoCountKey
@@ -96,21 +102,21 @@ class MonitoredPachinko(private val plugin: JavaPlugin) : PachinkoMachines, Pach
             return
         }
         if (continuousDrawing(block)) {
-            reContinuation(block, pachinkoPlayer, staging, pachinkoManager)
+            reContinuation(block, pachinkoPlayer, pachinkoManager)
         }
     }
     private fun imageDisplay(count: Int, block: Block) {
         when (count) {
-            1 -> monitorManager.displayImage(plugin, block, "one.png")
-            2 -> monitorManager.displayImage(plugin, block, "two.png")
-            3 -> monitorManager.displayImage(plugin, block, "three.png")
-            else -> monitorManager.displayImage(plugin, block, "aoringoServer.png")
+            1 -> monitorManager.displayImage(plugin, block, "one.png", pachinko)
+            2 -> monitorManager.displayImage(plugin, block, "two.png", pachinko)
+            3 -> monitorManager.displayImage(plugin, block, "three.png", pachinko)
+            else -> monitorManager.displayImage(plugin, block, "aoringoServer.png", pachinko)
         }
     }
-    private fun reContinuation(block: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging, pachinkoManager: PachinkoManager) {
+    private fun reContinuation(block: Block, pachinkoPlayer: PachinkoPlayer, pachinkoManager: PachinkoManager) {
         val message = "${ChatColor.YELLOW}継続"
         val pachinkoCountKey = pachinkoManager.pachinkoCountKey
         pachinkoManager.setTemporaryIntData(block, pachinkoCountKey, 0)
-        staging.blinkingDisplay(pachinkoPlayer, message, Sound.BLOCK_BELL_USE)
+        pachinko.blinkingDisplay(message, Sound.BLOCK_BELL_USE)
     }
 }

@@ -1,21 +1,19 @@
 package com.github.AoRingoServer.pachinkoMachine
 
-import com.github.AoRingoServer.PachinkoPlayer
 import com.github.AoRingoServer.PluginData
-import com.github.AoRingoServer.Staging
-import org.bukkit.block.Block
+import com.github.AoRingoServer.common.Pachinko
 import org.bukkit.plugin.java.JavaPlugin
 
-class FalseSimplePachinko(val plugin: JavaPlugin) : PachinkoMachines {
-    private val simplePachinko = SimplePachinko(plugin)
+class FalseSimplePachinko(val plugin: JavaPlugin, private val pachinko: Pachinko) : PachinkoMachines {
+    private val simplePachinko = SimplePachinko(plugin, pachinko)
     override fun acquisitionUseBallCount(): Int {
         return 1
     }
-    override fun shoot(block: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
+    override fun shoot() {
         val config = PluginData.DataManager.config
         val emeraldProbability = config?.get("falseSimple.emeraldProbability").toString().toInt()
         val simpleEmeraldProbability = config?.get("simple.probability").toString().toInt()
         val redStoneProbability = simpleEmeraldProbability / 2
-        simplePachinko.initialDrawing(block, stagingBlock, pachinkoPlayer, emeraldProbability, redStoneProbability, staging)
+        simplePachinko.initialDrawing(pachinko, emeraldProbability, redStoneProbability)
     }
 }

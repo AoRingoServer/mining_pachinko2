@@ -6,10 +6,10 @@ import org.bukkit.plugin.java.JavaPlugin
 class Main : JavaPlugin() {
     override fun onEnable() {
         super.onEnable()
-        server.pluginManager.registerEvents(Events(this, this), this)
+        server.pluginManager.registerEvents(Events(this), this)
         getCommand("pachinko")!!.setExecutor(PachinkoCommand(this))
         this.dataFolder.mkdirs()
-        PachinkoManager(this).makeImageFolder()
+        Yml(this).makeImagesFolder()
         saveResource("config.yml", true)
         PluginData.DataManager.config = Yml(this).loadConfig()
     }

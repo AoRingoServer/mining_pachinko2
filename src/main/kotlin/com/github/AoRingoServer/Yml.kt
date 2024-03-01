@@ -33,4 +33,10 @@ class Yml(private val plugin: Plugin) {
     fun loadConfig(): YamlConfiguration {
         return getYml("config")
     }
+    fun makeImagesFolder() {
+        val folder = File(plugin.dataFolder, "images/")
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+    }
 }
