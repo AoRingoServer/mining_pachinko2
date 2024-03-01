@@ -102,7 +102,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
             return
         }
         if (continuousDrawing(block)) {
-            reContinuation(block, pachinkoPlayer, pachinkoManager)
+            reContinuation(pachinkoManager, pachinko)
         }
     }
     private fun imageDisplay(count: Int, block: Block) {
@@ -113,10 +113,10 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
             else -> monitorManager.displayImage(plugin, block, "aoringoServer.png", pachinko)
         }
     }
-    private fun reContinuation(block: Block, pachinkoPlayer: PachinkoPlayer, pachinkoManager: PachinkoManager) {
+    private fun reContinuation(pachinkoManager: PachinkoManager, pachinko: Pachinko) {
         val message = "${ChatColor.YELLOW}継続"
         val pachinkoCountKey = pachinkoManager.pachinkoCountKey
-        pachinkoManager.setTemporaryIntData(block, pachinkoCountKey, 0)
+        pachinkoManager.setTemporaryIntData(pachinko.breakBlock, pachinkoCountKey, 0)
         pachinko.blinkingDisplay(message, Sound.BLOCK_BELL_USE)
     }
 }
