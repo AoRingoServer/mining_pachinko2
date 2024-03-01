@@ -116,7 +116,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
     private fun reContinuation(pachinkoManager: PachinkoManager, pachinko: Pachinko) {
         val message = "${ChatColor.YELLOW}継続"
         val pachinkoCountKey = pachinkoManager.pachinkoCountKey
-        pachinkoManager.setTemporaryIntData(pachinko.breakBlock, pachinkoCountKey, 0)
+        pachinkoManager.setTemporaryIntData(pachinko.stagingBlock, pachinkoCountKey, 0)
         pachinko.blinkingDisplay(message, Sound.BLOCK_BELL_USE)
     }
 }
