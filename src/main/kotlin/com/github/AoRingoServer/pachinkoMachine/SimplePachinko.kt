@@ -50,7 +50,7 @@ class SimplePachinko(val plugin: JavaPlugin, private val pachinko: Pachinko) : P
         if (random) {
             pachinko.hit(pachinko.pachinkoPlayer, amount)
         }
-        pachinko.breakBlock.type = Material.BEDROCK
+        pachinko.stagingBlock.type = Material.BEDROCK
     }
     private fun emeraldBrawing(pachinko: Pachinko) {
         pachinko.hit(pachinko.pachinkoPlayer, amount)
