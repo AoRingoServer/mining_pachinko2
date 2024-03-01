@@ -4,15 +4,17 @@ import com.github.AoRingoServer.PachinkoManager
 import com.github.AoRingoServer.PachinkoPlayer
 import com.github.AoRingoServer.PluginData
 import com.github.AoRingoServer.Staging
+import com.github.AoRingoServer.monitor.MonitorManager
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
-import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 import kotlin.random.Random
 
-class MonitoredPachinko(private val plugin: Plugin) : PachinkoMachines, PachinkoWithButtons {
+class MonitoredPachinko(private val plugin: JavaPlugin) : PachinkoMachines, PachinkoWithButtons {
     private val probabilityBlock = Material.SEA_LANTERN
+    private val monitorManager = MonitorManager()
     override fun shoot(block: Block, stagingBlock: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging) {
         val config = PluginData.DataManager.config
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
@@ -86,6 +88,8 @@ class MonitoredPachinko(private val plugin: Plugin) : PachinkoMachines, Pachinko
         val count = pachinkoManager.addContinuousCount(block) - 1
         val remainingCount = max - count
         player.sendTitle("${ChatColor.AQUA}$remainingCount", "")
+        val breakBlock = block.location.clone().add(0.0, 1.0, 0.0).block
+        imageDisplay(remainingCount, breakBlock)
         if (count == max) {
             pachinkoManager.setTemporaryIntData(block, pachinkoCountKey, 0)
             resetWool(block)
@@ -93,6 +97,14 @@ class MonitoredPachinko(private val plugin: Plugin) : PachinkoMachines, Pachinko
         }
         if (continuousDrawing(block)) {
             reContinuation(block, pachinkoPlayer, staging, pachinkoManager)
+        }
+    }
+    private fun imageDisplay(count: Int, block: Block) {
+        when (count) {
+            1 -> monitorManager.displayImage(plugin, block, "one.png")
+            2 -> monitorManager.displayImage(plugin, block, "two.png")
+            3 -> monitorManager.displayImage(plugin, block, "three.png")
+            else -> monitorManager.displayImage(plugin, block, "aoringoServer.png")
         }
     }
     private fun reContinuation(block: Block, pachinkoPlayer: PachinkoPlayer, staging: Staging, pachinkoManager: PachinkoManager) {

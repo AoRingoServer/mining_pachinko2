@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class Main : JavaPlugin() {
     override fun onEnable() {
         super.onEnable()
-        server.pluginManager.registerEvents(Events(this), this)
+        server.pluginManager.registerEvents(Events(this, this), this)
         getCommand("pachinko")!!.setExecutor(PachinkoCommand(this))
         this.dataFolder.mkdirs()
         PachinkoManager(this).makeImageFolder()

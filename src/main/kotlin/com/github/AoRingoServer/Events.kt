@@ -1,6 +1,5 @@
 package com.github.AoRingoServer
 
-import com.github.AoRingoServer.common.Pachinko
 import com.github.AoRingoServer.pachinkoMachine.MonitoredPachinko
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -12,25 +11,25 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 
-class Events(private val plugin: Plugin) : Listener {
+class Events(private val plugin: Plugin, private val javaPlugin: JavaPlugin) : Listener {
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         val player = e.player
         val pickel = player.inventory.itemInMainHand
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
-        val pachinko = Pachinko(plugin)
+        val pachinkoManager = PachinkoManager(javaPlugin)
         val block = e.block
         val stagingBlock = block.location.clone().add(0.0, -1.0, 0.0).block
-        val pachinkoMachine = pachinko.pachinkoMachine
-        val pachinkoManager = PachinkoManager(plugin)
+        val pachinkoMachine = pachinkoManager.pachinkoMachine
         val pachinkoType = pachinkoManager.acquisitionPachinkoType(block)
         val staging = Staging(plugin)
-        if (!pachinko.checkaPachinkoPickel(pickel)) {
+        if (!pachinkoManager.checkaPachinkoPickel(pickel)) {
             return
         }
         e.isCancelled = true
-        if (block.type != pachinko.breakBlockType) {
+        if (block.type != pachinkoManager.breakBlockType) {
             return
         }
         e.isCancelled = true
@@ -40,7 +39,7 @@ class Events(private val plugin: Plugin) : Listener {
         }
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1f)
         val usePachinkoBallCount = pachinkoMachine[pachinkoType]?.acquisitionUseBallCount()
-        if (!pachinko.consumptionPachinkoBall(player, usePachinkoBallCount?:return)) {
+        if (!pachinkoManager.consumptionPachinkoBall(player, usePachinkoBallCount?:return)) {
             return
         }
         pachinkoMachine[pachinkoType]?.shoot(block, stagingBlock, pachinkoPlayer, staging) ?: return
@@ -60,7 +59,7 @@ class Events(private val plugin: Plugin) : Listener {
     @EventHandler
     fun onButtonPush(e: PlayerInteractEvent) {
         val player = e.player
-        val pachinko = Pachinko(plugin)
+        val pachinkoManager = PachinkoManager(javaPlugin)
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
         val button = e.clickedBlock ?: return
         val pachinkoButton = PachinkoButton()
@@ -71,12 +70,11 @@ class Events(private val plugin: Plugin) : Listener {
         val connectionBlock = pachinkoButton.acquisitionConnectionBlock(button) ?: return
         val stagingBlock = connectionBlock.location.clone().add(0.0, -1.0, 0.0).block
         val staging = Staging(plugin)
-        val pachinkoManager = PachinkoManager(plugin)
         val pachinkoType = pachinkoManager.acquisitionPachinkoType(connectionBlock)
         val pachinkoMap = mapOf(
-            "monitored" to MonitoredPachinko(plugin)
+            "monitored" to MonitoredPachinko(javaPlugin)
         )
-        if (connectionBlock.type != pachinko.breakBlockType) { return }
+        if (connectionBlock.type != pachinkoManager.breakBlockType) { return }
         if (!pachinkoMap.keys.contains(pachinkoType)) { return }
         pachinkoMap[pachinkoType]?.pushingButton(button, connectionBlock, stagingBlock, pachinkoPlayer, staging)
     }

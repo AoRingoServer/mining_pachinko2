@@ -2,7 +2,6 @@ package com.github.AoRingoServer.Commands
 
 import com.github.AoRingoServer.PachinkoManager
 import com.github.AoRingoServer.Yml
-import com.github.AoRingoServer.common.Pachinko
 import com.github.AoRingoServer.common.PachinkoItem
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -10,9 +9,10 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 
-class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
+class PachinkoCommand(val plugin: JavaPlugin) : CommandExecutor, TabExecutor {
+    private val pachinkoManager = PachinkoManager(plugin)
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) { return true }
         val subCommand = args[0]
@@ -21,7 +21,6 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
         return true
     }
     private fun subCommandMap(sender: Player): Map<String, (Array<out String>) -> Unit> {
-        val pachinkoManager = PachinkoManager(plugin)
         val maxDistance = 10
         val block = sender.getTargetBlock(null, maxDistance)
         val subCommandMap = mapOf(
@@ -33,7 +32,7 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
             "setPachinkoType" to { args: Array<out String> ->
                 if (args.size == 2) {
                     val entry = args[1]
-                    if (block.type == Pachinko(plugin).breakBlockType) {
+                    if (block.type == pachinkoManager.breakBlockType) {
                         pachinkoManager.addPachinkoType(block, entry)
                         sender.sendMessage("${ChatColor.GREEN}パチンコの種類設定をしました")
                     }
@@ -46,7 +45,7 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
             "setMonitorID" to { args: Array<out String> ->
                 if (args.size == 2) {
                     val entry = args[1]
-                    if (block.type == Pachinko(plugin).breakBlockType) {
+                    if (block.type == pachinkoManager.breakBlockType) {
                         pachinkoManager.addMonitorID(block, entry)
                         sender.sendMessage("${ChatColor.GREEN}連携モニターのID設定をしました")
                     }
@@ -60,7 +59,7 @@ class PachinkoCommand(val plugin: Plugin) : CommandExecutor, TabExecutor {
         if (sender !is Player) { return mutableListOf() }
         return when (args.size) {
             1 -> subCommandMap(sender).keys.toMutableList()
-            2 -> Pachinko(plugin).pachinkoMachine.keys.toMutableList()
+            2 -> pachinkoManager.pachinkoMachine.keys.toMutableList()
             else -> mutableListOf()
         }
     }

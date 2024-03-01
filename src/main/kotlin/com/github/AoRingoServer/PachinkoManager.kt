@@ -1,11 +1,27 @@
 package com.github.AoRingoServer
 
+import com.github.AoRingoServer.common.PachinkoItem
+import com.github.AoRingoServer.pachinkoMachine.FalseSimplePachinko
+import com.github.AoRingoServer.pachinkoMachine.MonitoredPachinko
+import com.github.AoRingoServer.pachinkoMachine.PachinkoMachines
+import com.github.AoRingoServer.pachinkoMachine.SimplePachinko
+import org.bukkit.ChatColor
+import org.bukkit.GameMode
+import org.bukkit.Material
 import org.bukkit.block.Block
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
-import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
-class PachinkoManager(private val plugin: Plugin) {
+class PachinkoManager(private val plugin: JavaPlugin) {
+    val breakBlockType = Material.EMERALD_ORE
+    val pachinkoMachine = mapOf<String, PachinkoMachines>(
+        "simple" to SimplePachinko(plugin),
+        "falseSimple" to FalseSimplePachinko(plugin),
+        "monitored" to MonitoredPachinko(plugin)
+    )
     private val pachinkoFileName = "pachinkoData"
     val pachinkoCountKey = "pachinkoCountKey"
     private val yml = Yml(plugin)
@@ -63,5 +79,37 @@ class PachinkoManager(private val plugin: Plugin) {
             return metadata[0].asInt()
         }
         return null
+    }
+    fun acquisitionCoordinationMonitorID(block: Block): Int? {
+        val location = acquisitionBlockLocation(block)
+        val key = "$location.$monitorIDKey"
+        val monitorID = acquisitionDataToPluginDataFile(key) ?: return null
+        return monitorID.toInt()
+    }
+    fun consumptionPachinkoBall(player: Player, amount: Int): Boolean {
+        if (player.gameMode == GameMode.CREATIVE) {
+            return true
+        }
+        val errorMessage = "${ChatColor.RED}パチンコ玉をオフハンドに持ってください\n(統合版の場合 パチンコ玉を持ってしゃがむとオフハンドに入ります)"
+        val item = PachinkoItem().pachinkoBall()
+        item.amount = 1
+        val offHandItem = player.inventory.itemInOffHand
+        val playerHaveItem = offHandItem.clone()
+        playerHaveItem.amount = 1
+        if (playerHaveItem != item) {
+            player.sendMessage(errorMessage)
+            return false
+        }
+        if (playerHaveItem.amount < amount) {
+            player.sendMessage(errorMessage)
+            return false
+        }
+        offHandItem.amount = offHandItem.amount - amount
+        return true
+    }
+    fun checkaPachinkoPickel(pickel: ItemStack): Boolean {
+        val pickelName = "${ChatColor.GOLD}採掘パチンコ"
+        val picelType = Material.IRON_PICKAXE
+        return pickel.type == picelType && pickel.itemMeta?.displayName == pickelName
     }
 }
