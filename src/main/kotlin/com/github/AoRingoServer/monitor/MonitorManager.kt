@@ -22,7 +22,7 @@ class MonitorManager(val plugin: JavaPlugin) {
     }
     fun displayImage(imageName: String, pachinko: Pachinko) {
         val breakBlock = pachinko.breakBlock
-        val monitorID = PachinkoManager(plugin, pachinko).acquisitionCoordinationMonitorID(breakBlock) ?: return
+        val monitorID = PachinkoManager(plugin).acquisitionCoordinationMonitorID(breakBlock) ?: return
         val monitor = getMonitor(monitorID)
         val image = Image().make(plugin, imageName)
         resetMpaInfo(monitor)

@@ -27,9 +27,10 @@ class Events(private val plugin: JavaPlugin) : Listener {
         val block = e.block
         val stagingBlock = block.location.clone().add(0.0, -1.0, 0.0).block
         val pachinko = Pachinko(plugin, block, stagingBlock, pachinkoPlayer)
-        val pachinkoManager = PachinkoManager(plugin, pachinko)
+        val pachinkoManager = PachinkoManager(plugin)
         val pachinkoMachine = pachinkoManager.pachinkoMachine
         val pachinkoType = pachinkoManager.acquisitionPachinkoType(block)
+        val pachinkoClass = PachinkoManager(plugin).pachinkoMachine[pachinkoType]?.invoke(plugin, pachinko)
         if (!pachinkoManager.checkaPachinkoPickel(pickel)) {
             return
         }
@@ -43,11 +44,11 @@ class Events(private val plugin: JavaPlugin) : Listener {
             return
         }
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1f)
-        val usePachinkoBallCount = pachinkoMachine[pachinkoType]?.acquisitionUseBallCount()
+        val usePachinkoBallCount = pachinkoClass?.acquisitionUseBallCount()
         if (!pachinkoManager.consumptionPachinkoBall(player, usePachinkoBallCount?:return)) {
             return
         }
-        pachinkoMachine[pachinkoType]?.shoot() ?: return
+        pachinkoClass.shoot()
     }
     @EventHandler
     fun onPlayerToggleSneak(e: PlayerToggleSneakEvent) {
@@ -75,7 +76,7 @@ class Events(private val plugin: JavaPlugin) : Listener {
         val connectionBlock = pachinkoButton.acquisitionConnectionBlock(button) ?: return
         val stagingBlock = connectionBlock.location.clone().add(0.0, -1.0, 0.0).block
         val pachinko = Pachinko(plugin, connectionBlock, stagingBlock, pachinkoPlayer)
-        val pachinkoManager = PachinkoManager(plugin, pachinko)
+        val pachinkoManager = PachinkoManager(plugin)
         val pachinkoType = pachinkoManager.acquisitionPachinkoType(connectionBlock)
         val pachinkoMap = mapOf(
             "monitored" to MonitoredPachinko(plugin, pachinko)

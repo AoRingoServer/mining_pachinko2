@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.plugin.java.JavaPlugin
 
-class PachinkoManager(private val plugin: JavaPlugin, private val pachinko: Pachinko) {
+class PachinkoManager(private val plugin: JavaPlugin) {
     val breakBlockType = Material.EMERALD_ORE
     private val pachinkoFileName = "pachinkoData"
     val pachinkoCountKey = "pachinkoCountKey"
@@ -23,10 +23,10 @@ class PachinkoManager(private val plugin: JavaPlugin, private val pachinko: Pach
     private val pachinkoData = yml.getYml(pachinkoFileName)
     private val pachinkoTypeKey = "type"
     private val monitorIDKey = "monitorID"
-    val pachinkoMachine = mapOf<String, PachinkoMachines>(
-        "simple" to SimplePachinko(plugin, pachinko),
-        "falseSimple" to FalseSimplePachinko(plugin, pachinko),
-        "monitored" to MonitoredPachinko(plugin, pachinko)
+    val pachinkoMachine = mapOf<String, (JavaPlugin, Pachinko) -> PachinkoMachines>(
+        "simple" to { plugin, pachinko -> SimplePachinko(plugin, pachinko) },
+        "falseSimple" to { plugin, pachinko -> FalseSimplePachinko(plugin, pachinko) },
+        "monitored" to { plugin, pachinko -> MonitoredPachinko(plugin, pachinko) }
     )
     private fun acquisitionBlockLocation(block: Block): String {
         val blockLocation = block.location

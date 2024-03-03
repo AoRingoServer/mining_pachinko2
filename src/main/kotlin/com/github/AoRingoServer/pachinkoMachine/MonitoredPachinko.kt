@@ -88,7 +88,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
         return hundredDrawing <= probability
     }
     private fun continuation() {
-        val pachinkoManager = PachinkoManager(plugin, pachinko)
+        val pachinkoManager = PachinkoManager(plugin)
         val max = 3
         val player = pachinko.pachinkoPlayer.player
         val staginBlock = pachinko.stagingBlock
