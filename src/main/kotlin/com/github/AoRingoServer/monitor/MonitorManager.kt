@@ -33,15 +33,15 @@ class MonitorManager(val plugin: JavaPlugin) {
     }
     private fun realTimeUpdate(pachinkoPlayer: PachinkoPlayer, mapID: Int) {
         val player = pachinkoPlayer.player
-        val offhandItem = player.inventory.itemInOffHand.clone()
+        val inventoryNumber = 1
+        val playerItem = player.inventory.getItem(inventoryNumber)
         val mapItem = makeMapItem(mapID)
-        player.inventory.setItemInOffHand(mapItem)
-        if (offhandItem == mapItem) { return }
+        player.inventory.setItem(inventoryNumber, mapItem)
+        if (playerItem == mapItem) { return }
         Bukkit.getScheduler().runTaskLater(
             plugin,
             Runnable {
-                player.inventory.setItemInOffHand(offhandItem)
-                player.inventory.removeItem(mapItem)
+                player.inventory.setItem(inventoryNumber, playerItem)
             },
             10
         ) // 20Lは1秒を表す（1秒 = 20ticks）
@@ -49,7 +49,8 @@ class MonitorManager(val plugin: JavaPlugin) {
     private fun makeMapItem(mapID: Int): ItemStack {
         val map = ItemStack(Material.FILLED_MAP)
         val meta = map.itemMeta as MapMeta
-        meta.setDisplayName("${ChatColor.RED}移動不可")
+        meta.setDisplayName("${ChatColor.YELLOW}アイテム移動禁止")
+        meta.lore = mutableListOf("${ChatColor.RED}※アイテム移動によるアイテム保証諸々はありません")
         meta.mapId = mapID
         map.setItemMeta(meta)
         return map
