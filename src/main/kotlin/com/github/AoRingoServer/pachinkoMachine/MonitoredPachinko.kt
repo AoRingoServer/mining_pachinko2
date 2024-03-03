@@ -19,8 +19,9 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
         when (pachinko.stagingBlock.type) {
             Material.WHITE_WOOL -> fastDrawing(fastProbability, pachinko, probabilityBlock)
-            probabilityBlock -> resetWool(pachinko.stagingBlock)
+            probabilityBlock -> resetWoolandMonitor(pachinko)
             Material.GREEN_WOOL, Material.BLUE_WOOL, Material.RED_WOOL -> continuation()
+            else -> return
         }
     }
 
@@ -54,8 +55,10 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
             else -> Material.BLUE_WOOL
         }
     }
-    private fun resetWool(displayBlock: Block) {
-        displayBlock.type = Material.WHITE_WOOL
+    private fun resetWoolandMonitor(pachinko: Pachinko) {
+        val stringBlock = pachinko.stagingBlock
+        imageDisplay("black.png", pachinko)
+        stringBlock.type = Material.WHITE_WOOL
     }
 
     override fun pushingButton(button: Block) {
@@ -66,9 +69,8 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
         val failureMessage = "${ChatColor.RED}獲得失敗"
         if (!drawing) {
             player.playSound(player, Sound.BLOCK_FIRE_EXTINGUISH, 1f, 1f)
-            resetWool(pachinko.stagingBlock)
+            resetWoolandMonitor(pachinko)
             player.sendTitle(failureMessage, "")
-            imageDisplay("black.png", pachinko)
             return
         }
         hitImageDisplay()
@@ -111,10 +113,9 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
     }
     private fun endRush(pachinkoManager: PachinkoManager) {
         val staginBlock = pachinko.stagingBlock
-        val breakBlock = pachinko.breakBlock
         val pachinkoCountKey = pachinkoManager.pachinkoCountKey
         pachinkoManager.setTemporaryIntData(staginBlock, pachinkoCountKey, 0)
-        resetWool(staginBlock)
+        resetWoolandMonitor(pachinko)
         imageDisplay("rushend.png", pachinko)
         pachinko.blinkingDisplay("${ChatColor.RED}ラッシュ終了", Sound.BLOCK_FIRE_EXTINGUISH, imageName = "black.png")
     }

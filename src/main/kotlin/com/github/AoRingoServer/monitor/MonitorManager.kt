@@ -33,7 +33,7 @@ class MonitorManager(val plugin: JavaPlugin) {
     }
     private fun realTimeUpdate(pachinkoPlayer: PachinkoPlayer, mapID: Int) {
         val player = pachinkoPlayer.player
-        val inventoryNumber = 1
+        val inventoryNumber = 10
         val playerItem = player.inventory.getItem(inventoryNumber)
         val mapItem = makeMapItem(mapID)
         player.inventory.setItem(inventoryNumber, mapItem)
