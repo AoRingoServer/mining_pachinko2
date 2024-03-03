@@ -5,6 +5,7 @@ import com.github.AoRingoServer.pachinkoMachine.MonitoredPachinko
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -14,9 +15,13 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 class Events(private val plugin: JavaPlugin) : Listener {
+    private fun checkLoad(player: Player): Boolean {
+        return true
+    }
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         val player = e.player
+        if (!checkLoad(player)) { return }
         val pickel = player.inventory.itemInMainHand
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
         val block = e.block
@@ -59,6 +64,7 @@ class Events(private val plugin: JavaPlugin) : Listener {
     @EventHandler
     fun onButtonPush(e: PlayerInteractEvent) {
         val player = e.player
+        if (!checkLoad(player)) { return }
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
         val button = e.clickedBlock ?: return
         val pachinkoButton = PachinkoButton()

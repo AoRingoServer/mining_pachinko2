@@ -7,6 +7,6 @@ monitored:
   red : 5
   green : 35
   blue : 60
-  redContinuousRate : 50
-  greenContinuousRate : 30
-  blueContinuousRate : 10
+  redContinuousRate: 6
+  greenContinuousRate: 4
+  blueContinuousRate: 3
