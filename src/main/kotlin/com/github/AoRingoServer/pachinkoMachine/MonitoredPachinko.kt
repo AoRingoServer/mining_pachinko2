@@ -74,6 +74,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
             return
         }
         hitImageDisplay()
+        hit()
         pachinko.blinkingDisplay(message, Sound.ITEM_TOTEM_USE, imageName = "black.png")
         colorDrawing(pachinko.stagingBlock)
     }
@@ -141,9 +142,25 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
         pachinkoManager.setTemporaryIntData(pachinko.stagingBlock, pachinkoCountKey, 0)
         pachinko.blinkingDisplay(message, Sound.BLOCK_BELL_USE, imageName = "black.png")
         hitImageDisplay()
+        hit()
     }
     private fun hitImageDisplay() {
         val imageName = "hit.png"
         imageDisplay(imageName, pachinko)
+    }
+    private fun hit() {
+        val fittingPrice = hitDrawing()
+        pachinko.hit(fittingPrice)
+    }
+    private fun hitDrawing(): Int {
+        val probabilityChangeValue = 10
+        val highValue = 450
+        val lowValue = 200
+        val r = Random.nextInt(1, 100)
+        return if (r <= probabilityChangeValue) {
+            highValue
+        } else {
+            lowValue
+        }
     }
 }

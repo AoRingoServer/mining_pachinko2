@@ -48,12 +48,12 @@ class SimplePachinko(val plugin: JavaPlugin, private val pachinko: Pachinko) : P
     private fun redstoneDrawing(pachinko: Pachinko) {
         val random = Random.nextInt(0, 2) == 0
         if (random) {
-            pachinko.hit(pachinko.pachinkoPlayer, amount)
+            pachinko.hit(amount)
         }
         pachinko.stagingBlock.type = Material.BEDROCK
     }
     private fun emeraldBrawing(pachinko: Pachinko) {
-        pachinko.hit(pachinko.pachinkoPlayer, amount)
+        pachinko.hit(amount)
         pachinko.stagingBlock.type = Material.BEDROCK
         pachinko.pachinkoPlayer.player.spawnParticle(Particle.EXPLOSION_LARGE, pachinko.stagingBlock.location, 100, 0.5, 0.5, 0.5, 0.1)
     }

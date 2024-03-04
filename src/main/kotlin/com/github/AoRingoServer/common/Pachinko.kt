@@ -12,7 +12,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
 class Pachinko(private val plugin: JavaPlugin, val breakBlock: Block, val stagingBlock: Block, val pachinkoPlayer: PachinkoPlayer) {
-    fun hit(pachinkoPlayer: PachinkoPlayer, amount: Int) {
+    fun hit(amount: Int) {
         val player = pachinkoPlayer.player
         ItemManager().givePachinkoBall(pachinkoPlayer.player, amount)
         player.playSound(player, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f)
