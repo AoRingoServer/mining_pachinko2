@@ -3,6 +3,7 @@ package com.github.AoRingoServer.Commands
 import com.github.AoRingoServer.PachinkoManager
 import com.github.AoRingoServer.Yml
 import com.github.AoRingoServer.common.PachinkoItem
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -20,7 +21,7 @@ class PachinkoCommand(val plugin: JavaPlugin) : CommandExecutor, TabExecutor {
         subCommandMap[subCommand]?.invoke(args)
         return true
     }
-    private fun subCommandMap(sender: Player, pachinkoManager: PachinkoManager): Map<String, (Array<out String>) -> Unit> {
+    private fun subCommandMap(sender: Player, pachinkoManager: PachinkoManager): Map<String, (Array<out String>) -> Any> {
         val maxDistance = 10
         val block = sender.getTargetBlock(null, maxDistance)
         val subCommandMap = mapOf(
@@ -50,6 +51,10 @@ class PachinkoCommand(val plugin: JavaPlugin) : CommandExecutor, TabExecutor {
                         sender.sendMessage("${ChatColor.GREEN}連携モニターのID設定をしました")
                     }
                 }
+            },
+            "updateYml" to {
+                plugin.saveResource("config.yml", true)
+                Bukkit.broadcastMessage("${ChatColor.YELLOW}configファイルをアップデートしました")
             }
         )
         return subCommandMap
