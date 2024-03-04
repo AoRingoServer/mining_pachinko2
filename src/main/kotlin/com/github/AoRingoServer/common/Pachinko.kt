@@ -21,7 +21,7 @@ class Pachinko(private val plugin: JavaPlugin, val breakBlock: Block, val stagin
     fun blinkingDisplay(message: String, sound: Sound, subMessage: String = "", imageName: String? = null) {
         val interval = 9L
         var c = 4
-        blockBreak(breakBlock)
+        blockBreak()
         val player = pachinkoPlayer.player
         val pachinko = Pachinko(plugin, breakBlock, stagingBlock, pachinkoPlayer)
         player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 20, 255))
@@ -35,7 +35,7 @@ class Pachinko(private val plugin: JavaPlugin, val breakBlock: Block, val stagin
                 player.playSound(player, sound, 1f, 1f)
                 c --
                 if (c == 0) {
-                    blockCancellationBreak(breakBlock)
+                    blockCancellationBreak()
                     if (imageName != null) {
                         MonitorManager(plugin).displayImage(imageName, pachinko)
                     }
@@ -44,10 +44,10 @@ class Pachinko(private val plugin: JavaPlugin, val breakBlock: Block, val stagin
             }
         }.runTaskTimer(plugin, 0L, interval) // 1秒間隔 (20 ticks) でタスクを実行
     }
-    private fun blockBreak(block: Block) {
-        block.type = Material.BEDROCK
+    private fun blockBreak() {
+        breakBlock.type = Material.BEDROCK
     }
-    private fun blockCancellationBreak(block: Block) {
-        block.type = Material.EMERALD_ORE
+    private fun blockCancellationBreak() {
+        breakBlock.type = Material.EMERALD_ORE
     }
 }
