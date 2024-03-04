@@ -19,7 +19,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
         val fastProbability = config?.get("monitored.fastProbability").toString().toInt()
         when (pachinko.stagingBlock.type) {
             Material.WHITE_WOOL -> fastDrawing(fastProbability, pachinko, probabilityBlock)
-            probabilityBlock -> resetWoolandMonitor(pachinko)
+            probabilityBlock -> resetWoolAndMonitor(pachinko)
             Material.GREEN_WOOL, Material.BLUE_WOOL, Material.RED_WOOL -> continuation()
             else -> return
         }
@@ -55,7 +55,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
             else -> Material.BLUE_WOOL
         }
     }
-    private fun resetWoolandMonitor(pachinko: Pachinko) {
+    private fun resetWoolAndMonitor(pachinko: Pachinko) {
         val stringBlock = pachinko.stagingBlock
         imageDisplay("black.png", pachinko)
         stringBlock.type = Material.WHITE_WOOL
@@ -69,7 +69,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
         val failureMessage = "${ChatColor.RED}獲得失敗"
         if (!drawing) {
             player.playSound(player, Sound.BLOCK_FIRE_EXTINGUISH, 1f, 1f)
-            resetWoolandMonitor(pachinko)
+            resetWoolAndMonitor(pachinko)
             player.sendTitle(failureMessage, "")
             return
         }
@@ -115,7 +115,7 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
         val staginBlock = pachinko.stagingBlock
         val pachinkoCountKey = pachinkoManager.pachinkoCountKey
         pachinkoManager.setTemporaryIntData(staginBlock, pachinkoCountKey, 0)
-        resetWoolandMonitor(pachinko)
+        resetWoolAndMonitor(pachinko)
         imageDisplay("rushend.png", pachinko)
         pachinko.blinkingDisplay("${ChatColor.RED}ラッシュ終了", Sound.BLOCK_FIRE_EXTINGUISH, imageName = "black.png")
     }
