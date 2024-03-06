@@ -59,10 +59,10 @@ class MonitorManager(val plugin: JavaPlugin) {
         if (playerItem?.type != Material.FILLED_MAP) { return false }
         return playerItemName == mapItemName
     }
-    private fun makeMapItem(mapID: Int): ItemStack {
+    fun makeMapItem(mapID: Int): ItemStack {
         val map = ItemStack(Material.FILLED_MAP)
         val meta = map.itemMeta as MapMeta
-        meta.setDisplayName("${ChatColor.YELLOW}アイテム移動禁止")
+        meta.setDisplayName("${ChatColor.YELLOW}モニター")
         meta.lore = mutableListOf("${ChatColor.RED}※アイテム移動によるアイテム保証諸々はありません")
         meta.mapId = mapID
         map.setItemMeta(meta)

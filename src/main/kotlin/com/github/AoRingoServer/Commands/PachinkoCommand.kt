@@ -3,6 +3,7 @@ package com.github.AoRingoServer.Commands
 import com.github.AoRingoServer.PachinkoManager
 import com.github.AoRingoServer.Yml
 import com.github.AoRingoServer.common.PachinkoItem
+import com.github.AoRingoServer.monitor.MonitorManager
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -55,6 +56,13 @@ class PachinkoCommand(val plugin: JavaPlugin) : CommandExecutor, TabExecutor {
             "updateYml" to {
                 plugin.saveResource("config.yml", true)
                 Bukkit.broadcastMessage("${ChatColor.YELLOW}configファイルをアップデートしました")
+            },
+            "givemonitor" to { args: Array<out String> ->
+                if (args.size == 2) {
+                    val entry = args[1]
+                    val mapItem = MonitorManager(plugin).makeMapItem(entry.toInt())
+                    sender.inventory.addItem(mapItem)
+                }
             }
         )
         return subCommandMap
