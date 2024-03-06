@@ -14,6 +14,8 @@ import org.bukkit.map.MapView
 import org.bukkit.plugin.java.JavaPlugin
 
 class MonitorManager(val plugin: JavaPlugin) {
+    private val monitorListKey = "monitorList"
+    private val monitorDataFile = "monitorData.yml"
     private fun getMonitor(mapNumber: Int): MapView {
         return Bukkit.getMap(mapNumber) ?: Bukkit.createMap(Bukkit.getWorlds()[0])
     }
@@ -33,7 +35,8 @@ class MonitorManager(val plugin: JavaPlugin) {
     }
     private fun realTimeUpdate(pachinkoPlayer: PachinkoPlayer, mapID: Int) {
         val player = pachinkoPlayer.player
-        val inventoryNumber = 10
+        val inventoryNumber = 35
+        val time: Long = 5
         val playerItem = player.inventory.getItem(inventoryNumber)
         val mapItem = makeMapItem(mapID)
         player.inventory.setItem(inventoryNumber, mapItem)
@@ -41,10 +44,20 @@ class MonitorManager(val plugin: JavaPlugin) {
         Bukkit.getScheduler().runTaskLater(
             plugin,
             Runnable {
-                player.inventory.setItem(inventoryNumber, playerItem)
+                if (checkPlayerItem(playerItem, mapItem)) {
+                    player.inventory.setItem(inventoryNumber, ItemStack(Material.AIR))
+                } else {
+                    player.inventory.setItem(inventoryNumber, playerItem)
+                }
             },
-            10
+            time
         ) // 20Lは1秒を表す（1秒 = 20ticks）
+    }
+    private fun checkPlayerItem(playerItem: ItemStack?, mapItem: ItemStack): Boolean {
+        val playerItemName = playerItem?.itemMeta?.displayName ?: ""
+        val mapItemName = mapItem.itemMeta?.displayName
+        if (playerItem?.type != Material.FILLED_MAP) { return false }
+        return playerItemName == mapItemName
     }
     private fun makeMapItem(mapID: Int): ItemStack {
         val map = ItemStack(Material.FILLED_MAP)

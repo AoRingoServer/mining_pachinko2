@@ -39,4 +39,39 @@ class Yml(private val plugin: Plugin) {
             folder.mkdirs()
         }
     }
+    fun addList(fileName: String, key: String, value: String) {
+        val file = File(plugin.dataFolder, fileName)
+
+        // ファイルが存在しない場合は新規作成
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+
+        // YAMLファイルとして読み込み
+        val ymlFIle = YamlConfiguration.loadConfiguration(file)
+
+        // 指定されたキーが存在するか確認し、リストを取得する
+        val list = ymlFIle.getStringList(key)
+
+        // 値をリストに追加
+        list.add(value)
+
+        // 更新したリストをYAMLファイルに保存
+        ymlFIle.set(key, list)
+        ymlFIle.save(file)
+    }
+    fun getList(fileName: String, key: String): MutableList<String> {
+        val file = File(plugin.dataFolder, fileName)
+
+        // ファイルが存在しない場合は新規作成
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+
+        // YAMLファイルとして読み込み
+        val ymlFIle = YamlConfiguration.loadConfiguration(file)
+
+        // 指定されたキーが存在するか確認し、リストを取得する
+        return ymlFIle.getStringList(key)
+    }
 }

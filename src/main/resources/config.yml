@@ -3,7 +3,7 @@ simple:
 falseSimple:
   emeraldProbability: 120
 monitored:
-  fastProbability : 30
+  fastProbability : 200
   red : 5
   green : 35
   blue : 60

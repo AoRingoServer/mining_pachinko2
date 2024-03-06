@@ -154,8 +154,8 @@ class MonitoredPachinko(private val plugin: JavaPlugin, private val pachinko: Pa
     }
     private fun hitDrawing(): Int {
         val probabilityChangeValue = 10
-        val highValue = 450
-        val lowValue = 200
+        val highValue = 192
+        val lowValue = 128
         val r = Random.nextInt(1, 100)
         return if (r <= probabilityChangeValue) {
             highValue

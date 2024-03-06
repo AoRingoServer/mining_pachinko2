@@ -16,6 +16,9 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class Events(private val plugin: JavaPlugin) : Listener {
     private fun checkLoad(player: Player): Boolean {
+        val server = Server(plugin)
+        val cpuUseRate = server.getMemoryUsage()
+        // Bukkit.broadcastMessage("$cpuUseRate%")
         return true
     }
     @EventHandler
