@@ -9,11 +9,15 @@ import com.github.AoRingoServer.pachinkoMachine.SimplePachinko
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import kotlin.random.Random
 
 class PachinkoManager(private val plugin: JavaPlugin) {
     val breakBlockType = Material.EMERALD_ORE
@@ -105,5 +109,21 @@ class PachinkoManager(private val plugin: JavaPlugin) {
         val pickelName = "${ChatColor.GOLD}採掘パチンコ"
         val picelType = Material.IRON_PICKAXE
         return pickel.type == picelType && pickel.itemMeta?.displayName == pickelName
+    }
+    fun fastStaging(pachinko: Pachinko) {
+        if (!drawingFastStaging()) { return }
+        val message = "${ChatColor.AQUA}今のうちに掘れ！！"
+        val subTitle = "${ChatColor.YELLOW}チャンス"
+        val sound = Sound.ENTITY_PLAYER_LEVELUP
+        val durationSeconds = 10
+        val miningSpeedLevel = 5
+        val player = pachinko.pachinkoPlayer.player
+        pachinko.blinkingDisplay(message, sound, subMessage = subTitle)
+        player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, durationSeconds * 20, miningSpeedLevel - 1))
+    }
+    private fun drawingFastStaging(): Boolean {
+        val config = PluginData.DataManager.config
+        val probability = config?.getInt("common,fastStagingProbability") ?: return false
+        return Random.nextInt(0, probability) == 0
     }
 }

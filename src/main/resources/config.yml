@@ -1,3 +1,5 @@
+common:
+  fastStagingProbability : 30
 simple:
   probability: 60
 falseSimple:

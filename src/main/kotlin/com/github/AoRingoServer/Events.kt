@@ -5,7 +5,6 @@ import com.github.AoRingoServer.pachinkoMachine.MonitoredPachinko
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -15,16 +14,9 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 class Events(private val plugin: JavaPlugin) : Listener {
-    private fun checkLoad(player: Player): Boolean {
-        val server = Server(plugin)
-        val cpuUseRate = server.getMemoryUsage()
-        // Bukkit.broadcastMessage("$cpuUseRate%")
-        return true
-    }
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         val player = e.player
-        if (!checkLoad(player)) { return }
         val pickel = player.inventory.itemInMainHand
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
         val block = e.block
@@ -33,7 +25,7 @@ class Events(private val plugin: JavaPlugin) : Listener {
         val pachinkoManager = PachinkoManager(plugin)
         val pachinkoMachine = pachinkoManager.pachinkoMachine
         val pachinkoType = pachinkoManager.acquisitionPachinkoType(block)
-        val pachinkoClass = PachinkoManager(plugin).pachinkoMachine[pachinkoType]?.invoke(plugin, pachinko)
+        val pachinkoClass = pachinkoMachine[pachinkoType]?.invoke(plugin, pachinko)
         if (!pachinkoManager.checkaPachinkoPickel(pickel)) {
             return
         }
@@ -52,6 +44,7 @@ class Events(private val plugin: JavaPlugin) : Listener {
             return
         }
         pachinkoClass.shoot()
+        pachinkoManager.fastStaging(pachinko)
     }
     @EventHandler
     fun onPlayerToggleSneak(e: PlayerToggleSneakEvent) {
@@ -68,7 +61,6 @@ class Events(private val plugin: JavaPlugin) : Listener {
     @EventHandler
     fun onButtonPush(e: PlayerInteractEvent) {
         val player = e.player
-        if (!checkLoad(player)) { return }
         val pachinkoPlayer = PachinkoPlayer(player, plugin)
         val button = e.clickedBlock ?: return
         val pachinkoButton = PachinkoButton()
