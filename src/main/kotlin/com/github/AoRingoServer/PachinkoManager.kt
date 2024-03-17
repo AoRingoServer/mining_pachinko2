@@ -115,7 +115,7 @@ class PachinkoManager(private val plugin: JavaPlugin) {
         val message = "${ChatColor.AQUA}今のうちに掘れ！！"
         val subTitle = "${ChatColor.YELLOW}チャンス"
         val sound = Sound.ENTITY_PLAYER_LEVELUP
-        val durationSeconds = 10
+        val durationSeconds = 5
         val miningSpeedLevel = 5
         val player = pachinko.pachinkoPlayer.player
         pachinko.blinkingDisplay(message, sound, subMessage = subTitle)
@@ -123,7 +123,7 @@ class PachinkoManager(private val plugin: JavaPlugin) {
     }
     private fun drawingFastStaging(): Boolean {
         val config = PluginData.DataManager.config
-        val probability = config?.getInt("common,fastStagingProbability") ?: return false
+        val probability = config?.getInt("common.fastStagingProbability") ?: return false
         return Random.nextInt(0, probability) == 0
     }
 }
