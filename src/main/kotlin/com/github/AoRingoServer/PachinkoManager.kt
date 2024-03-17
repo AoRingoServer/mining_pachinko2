@@ -115,7 +115,7 @@ class PachinkoManager(private val plugin: JavaPlugin) {
         val message = "${ChatColor.AQUA}今のうちに掘れ！！"
         val subTitle = "${ChatColor.YELLOW}チャンス"
         val sound = Sound.ENTITY_PLAYER_LEVELUP
-        val durationSeconds = 5
+        val durationSeconds = 6
         val miningSpeedLevel = 5
         val player = pachinko.pachinkoPlayer.player
         pachinko.blinkingDisplay(message, sound, subMessage = subTitle)
